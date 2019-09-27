@@ -27,8 +27,11 @@ class ZabbixGroupFactory(ZabbixFactory):
         z_group: list = self._zapi.hostgroup.get(**hostgroup_get)
         return [self.make(group) for group in z_group]
 
-    def get_by_name(self, _name: str):
-        """Получение списка объекторв ZabbixGroup из ZabbixAPI по имени"""
+    def get_by_name(self, _name):
+        """Получение списка объекторв ZabbixGroup из ZabbixAPI по имени
+
+        :type _name: str|list[str]
+        """
         return self.get_by_filter({'name': _name})
 
     def create(self, groupname: str):
@@ -188,7 +191,7 @@ class ZabbixEventFactory(ZabbixFactory):
         """Создание объекта ZabbixEvent из ZabbixAPI"""
         return ZabbixEvent.get_by_id(self._zapi, eventid)
 
-    def get_by_groupids(self, groupids: list, limit: int = 500):
+    def get_by_groupids(self, groupids: list[int], limit: int = 500):
         """Генератор событий из групп groupids по ZabbixAPI"""
         if groupids is None:
             groupids = [10]  # Группа по-умолчанию - A4
