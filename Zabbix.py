@@ -297,6 +297,8 @@ class ZabbixHost(Zabbix):
 
     @property
     def host(self) -> str:
+        if self._z_host.get('host') is not None:
+            self._get()
         return self._z_host.get('host')
 
     @host.setter
@@ -336,9 +338,7 @@ class ZabbixHost(Zabbix):
         self._vip = None
 
     def __str__(self) -> str:
-        if self._z_host.get('host') is not None:
-            self._get()
-        return self._z_host.get('host')
+        return self.host
 
     @classmethod
     def get_by_id(cls, zapi: ZabbixAPI, hostid: int):
