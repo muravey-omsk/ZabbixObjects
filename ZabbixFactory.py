@@ -16,7 +16,13 @@ class ZabbixGroupFactory(ZabbixFactory):
 
     def get_by_id(self, groupid: int):
         """Создание объекта ZabbixGroup из ZabbixAPI"""
-        return ZabbixGroup.get_by_id(self._zapi, groupid)
+        with no_index('Zabbix group not found'):
+            hostgroup_get = dict(
+                output='extend',
+                groupids=[groupid],
+            )
+            z_group = self._zapi.hostgroup.get(**hostgroup_get)[0]
+            return ZabbixGroup(self._zapi, z_group)
 
     def get_by_filter(self, _filter: dict):
         """Получение списка объектов ZabbixGroup из ZabbixAPI по фильтру"""
