@@ -40,7 +40,7 @@ class ZabbixGroupFactory(ZabbixFactory):
         """
         return self.get_by_filter({'name': _name})
 
-    def create(self, groupname: str):
+    def new(self, groupname: str):
         """Создание нового узлв в ZabbixAPI"""
         z_groups = self._zapi.hostgroup.create(name=groupname)
         with no_index('Ошибка создания группы'):
@@ -61,7 +61,7 @@ class ZabbixMacroFactory(ZabbixFactory):
         z_macros = self._zapi.usermacro.get(**usermacro_get)
         return [self.make(m) for m in z_macros]
 
-    def create(self, hostid: int, macro: str, value: str = ''):
+    def new(self, hostid: int, macro: str, value: str = ''):
         """Создание нового макроса в ZabbixAPI
 
         :rtype: ZabbixMacro
@@ -142,7 +142,7 @@ class ZabbixHostFactory(ZabbixFactory):
         )
         return [self.make(host) for host in z_hosts]
 
-    def create(self, host: dict):
+    def new(self, host: dict):
         """Создание нового макроса в ZabbixAPI
 
         :rtype: ZabbixHost
