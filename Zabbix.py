@@ -415,10 +415,6 @@ class ZabbixHost(Zabbix):
 
     @property
     def interfaces(self):
-        """
-
-        :rtype: list[ZabbixInterface]
-        """
         if not self._interfaces or len(self._interfaces) != len(self._z_host.get('interfaces')):
             if not self._z_host.get('interfaces'):
                 self._get(output='interfaces', selectInterfaces='extend')
@@ -430,9 +426,7 @@ class ZabbixHost(Zabbix):
         return main_interface
 
     def get_ip(self):
-        """Получение ip
-        :rtype: str
-        """
+        """Получение ip основного интерфейса"""
         return self.get_main_interface().ip
 
     @property
