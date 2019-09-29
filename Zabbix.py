@@ -422,7 +422,7 @@ class ZabbixHost(Zabbix):
         return self._interfaces
 
     def get_main_interface(self):
-        main_interface = list(filter(lambda i: int(i.main) == 1, self.interfaces))[0]
+        main_interface = next(filter(lambda i: int(i.main) == 1, self.interfaces))
         return main_interface
 
     def get_ip(self):
