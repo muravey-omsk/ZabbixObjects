@@ -1,8 +1,6 @@
-import logging
 from abc import ABC
-from contextlib import contextmanager
 
-from pyzabbix import ZabbixAPI
+from Zabbix import *
 
 
 @contextmanager
@@ -208,7 +206,7 @@ class ZabbixEventFactory(ZabbixFactory):
         """Создание объекта ZabbixEvent из ZabbixAPI"""
         return ZabbixEvent.get_by_id(self._zapi, eventid)
 
-    def get_by_groupids(self, groupids: list[int], limit: int = 500):
+    def get_by_groupids(self, groupids: list, limit: int = 500):
         """Генератор событий из групп groupids по ZabbixAPI"""
         if groupids is None:
             groupids = [10]  # Группа по-умолчанию - A4
