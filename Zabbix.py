@@ -268,6 +268,12 @@ class ZabbixInterface(Zabbix):
             self._get()
         return int(self._z_interface.get('useip'))
 
+    @useip.setter
+    def useip(self, value: int):
+        """0 - use ip, 1 - use DNS"""
+        self._update(useip=value)
+        self._z_interface['useip'] = value
+
 
 class ZabbixHost(Zabbix):
     """Класс для работы с узлами Zabbix"""
