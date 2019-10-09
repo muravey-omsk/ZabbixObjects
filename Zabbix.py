@@ -578,20 +578,15 @@ class ZabbixTrigger(Zabbix):
         return z_event
 
     def get_last_events(self):
-        """Получение последних событий из ZabbixAPI для этого триггера
-
-        :rtype: list[ZabbixEvent]
-        """
+        """Получение последних событий из ZabbixAPI для этого триггера """
         z_events = self._get_last_events()
-        events = [ZabbixEvent.get_by_id(self._zapi, e.get('eventid')) for e in z_events]
-        return events
+        return (ZabbixEvent.get_by_id(self._zapi, e.get('eventid')) for e in z_events)
 
     def get_last_tickets_keys(self):
         """Получение последних сообщений подтверждённых событий по триггеру из Zabbix API"""
         z_events = self._get_last_events(acknowledged='True', value=1)
         # Получаем список ключей тикетов
-        tickets_keys: list[str] = [e.get('message') for e in z_events]
-        return tickets_keys
+        return (e.get('message') for e in z_events)
 
 
 class ZabbixEvent(Zabbix):
