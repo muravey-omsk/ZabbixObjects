@@ -1,6 +1,6 @@
 from abc import ABC
 
-from Zabbix import *
+from .Zabbix import *
 
 
 @contextmanager
