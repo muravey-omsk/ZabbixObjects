@@ -359,8 +359,8 @@ class ZabbixHost(Zabbix):
 
     def _get_VIP(self) -> str:
         """Получение статуса коммутатора"""
-        is_svip = self.get_macro_value(r'{$IS_SVIP}')
-        is_vip = self.get_macro_value(r'{$IS_VIP}')
+        is_svip = self.get_macro(r'{$IS_SVIP}').value
+        is_vip = self.get_macro(r'{$IS_VIP}').value
         if is_svip and int(is_svip) == 1:
             return 'SVIP'
         elif is_vip and int(is_vip) == 1:
@@ -395,10 +395,6 @@ class ZabbixHost(Zabbix):
         :rtype: ZabbixMacro
         """
         return list(filter(lambda m: m.name == macro, self.macros))[0]
-
-    def get_macro_value(self, macro: str):
-        """Получение значения пользовательского макроса"""
-        return self.get_macro(macro).value
 
     @property
     def parent_templates(self):
