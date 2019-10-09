@@ -70,6 +70,9 @@ class ZabbixMacroFactory(ZabbixFactory):
         z_macros = self._zapi.usermacro.get(**usermacro_get)
         return (self.make(m) for m in z_macros)
 
+    def get_by_macro(self, name: str, value: str):
+        return self.get_by_filter({'macro': name, 'value': value})
+
     def new(self, hostid: int, macro: str, value: str = ''):
         """Создание нового макроса в ZabbixAPI
 
