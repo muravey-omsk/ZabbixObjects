@@ -49,6 +49,17 @@ class ZabbixGroup(Zabbix):
         super().__init__(zapi)
         self._z_group = group
 
+    @classmethod
+    def get_by_id(cls, zapi: ZabbixAPI, groupid: int):
+        """Создание объекта ZabbixGroup из ZabbixAPI"""
+        with no_index('Zabbix group not found'):
+            hostgroup_get = dict(
+                output='extend',
+                groupids=[groupid],
+            )
+            z_group = zapi.hostgroup.get(**hostgroup_get)[0]
+            return cls(zapi, z_group)
+
 
 class ZabbixMacro(Zabbix):
     """Класс для работы с макросами Zabbix"""
