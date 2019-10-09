@@ -1,6 +1,17 @@
+import logging
 from abc import ABC
+from contextlib import contextmanager
 
-from ZabbixObjects.Zabbix import *
+from pyzabbix import ZabbixAPI
+
+
+@contextmanager
+def no_index(log_message: str):
+    """Менеджер контекста обработки исключения IndexError"""
+    try:
+        yield
+    except IndexError as e:
+        logging.info(log_message + str(e))
 
 
 class ZabbixFactory(ABC):
@@ -31,9 +42,9 @@ class ZabbixGroupFactory(ZabbixFactory):
             filter=_filter,
         )
         z_group: list = self._zapi.hostgroup.get(**hostgroup_get)
-        return [self.make(group) for group in z_group]
+        return (self.make(group) for group in z_group)
 
-    def get_by_name(self, _name):
+    def get_by_name(self, _name: str):
         """Получение списка объекторв ZabbixGroup из ZabbixAPI по имени
 
         :type _name: str|list[str]
@@ -59,7 +70,7 @@ class ZabbixMacroFactory(ZabbixFactory):
             filter=_filter,
         )
         z_macros = self._zapi.usermacro.get(**usermacro_get)
-        return [self.make(m) for m in z_macros]
+        return (self.make(m) for m in z_macros)
 
     def new(self, hostid: int, macro: str, value: str = ''):
         """Создание нового макроса в ZabbixAPI
@@ -88,7 +99,7 @@ class ZabbixTemplateFactory(ZabbixFactory):
             filter=_filter,
         )
         z_templates = self._zapi.template.get(**template_get)
-        return [self.make(t) for t in z_templates]
+        return (self.make(t) for t in z_templates)
 
     def get_by_name(self, template_name: str):
         """Получение шаблона из ZabbixAPI по имени"""
@@ -140,7 +151,7 @@ class ZabbixHostFactory(ZabbixFactory):
             search=_search,
             searchWildcardsEnabled=True,
         )
-        return [self.make(host) for host in z_hosts]
+        return (self.make(host) for host in z_hosts)
 
     def new(self, host: dict):
         """Создание нового макроса в ZabbixAPI
