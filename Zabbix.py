@@ -141,34 +141,38 @@ class ZabbixTemplate(Zabbix):
         if not template.get('templateid'):
             raise KeyError
         super().__init__(zapi)
-        self.z_template = template
+        self._z_template = template
 
     def _get(self):
         """Получение всех данных шаблона"""
         template_get = dict(
             output='extend',
-            templateids=self.z_template.get('templateid'),
+            templateids=self._z_template.get('templateid'),
         )
         z_template = self._zapi.template.get(**template_get)[0]
-        self.z_template.update(z_template)
+        self._z_template.update(z_template)
+
+    @property
+    def templateid(self):
+        return self._z_template['templateid']
 
     @property
     def host(self) -> str:
-        if not self.z_template.get('host'):
+        if not self._z_template.get('host'):
             self._get()
-        return self.z_template.get('host')
+        return self._z_template.get('host')
 
     @property
     def name(self) -> str:
-        if not self.z_template.get('name'):
+        if not self._z_template.get('name'):
             self._get()
-        return self.z_template.get('name')
+        return self._z_template.get('name')
 
     @property
     def description(self) -> str:
-        if not self.z_template.get('description'):
+        if not self._z_template.get('description'):
             self._get()
-        return self.z_template.get('description')
+        return self._z_template.get('description')
 
 
 class ZabbixInterface(Zabbix):
