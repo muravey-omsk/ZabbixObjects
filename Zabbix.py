@@ -401,10 +401,11 @@ class ZabbixHost(Zabbix):
 
     @property
     def parent_templates(self):
-        """Возвращает список привязанных шаблонов"""
+        """Возвращает список привязанных шаблонов
+        """
         if not self._z_host.get('parentTemplates'):
             self._get(output='parentTemplates', selectParentTemplates='extend')
-        return self._z_host.get('parentTemplates')
+        return (ZabbixTemplate(self._zapi, t) for t in self._z_host.get('parentTemplates'))
 
     def link_template(self, template: ZabbixTemplate):
         """Привязывает новый шаблон и удаляет все остальные с этого узла"""
