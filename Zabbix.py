@@ -369,6 +369,8 @@ class ZabbixHost(Zabbix):
 
     @property
     def status(self) -> int:
+        if self._z_host.get('status') is None:
+            self._get()
         return int(self._z_host.get('status'))
 
     @status.setter
@@ -377,9 +379,7 @@ class ZabbixHost(Zabbix):
         self._z_host['status'] = value
 
     def is_monitored(self) -> bool:
-        if self._z_host.get('status') is None:
-            self._get()
-        return self._z_host.get('status') == 0
+        return self.status == 0
 
     @property
     def macros(self):
