@@ -440,7 +440,8 @@ class ZabbixHost(Zabbix):
 
     @inventory.setter
     def inventory(self, value: dict):
-        self._update(inventory=value)
+        self._z_host['inventory'].update(value)
+        self._update(inventory=self._z_host.get('inventory'))
 
 
 class ZabbixTrigger(Zabbix):
