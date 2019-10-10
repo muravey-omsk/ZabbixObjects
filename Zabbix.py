@@ -346,7 +346,6 @@ class ZabbixHost(Zabbix):
         self._z_host = host
         self._macros = list()  # список ZabbixMacro
         self._interfaces = list()  # список ZabbixInterface
-        self._parent_templates = list()  # список ZabbixTemplate
         self._vip = None
 
     def __str__(self) -> str:
@@ -402,30 +401,19 @@ class ZabbixHost(Zabbix):
 
     @property
     def parent_templates(self):
-        """Возвращает список привязанных шаблонов
-
-        :rtype: list[ZabbixTemplate]
-        """
-        # Если список пуст или не равен списку _z_host['parentTemplates']
-        if not self._parent_templates or len(self._parent_templates) != len(self._z_host.get('parentTemplates')):
-            if not self._z_host.get('parentTemplates'):
-                self._get(output='parentTemplates', selectParentTemplates='extend')
-            self._parent_templates = [ZabbixTemplate(self._zapi, t) for t in self._z_host.get('parentTemplates')]
-        return self._parent_templates
+        """Возвращает список привязанных шаблонов"""
+        if not self._z_host.get('parentTemplates'):
+            self._get(output='parentTemplates', selectParentTemplates='extend')
+        return self._z_host.get('parentTemplates')
 
     def link_template(self, template: ZabbixTemplate):
-        """Привязывает новый шаблон"""
-        self._z_host['parentTemplates'].append(template.z_template)
-        z_parent_templateids = [{'templateid': t.templateid} for t in self._z_host.get('parentTemplates')]
-        self._update(templates=z_parent_templateids)
-        self._parent_templates.append(template)
+        """Привязывает новый шаблон и удаляет все остальные с этого узла"""
+        self._update(templates=template.templateid)
+        self._get(output='parentTemplates', selectParentTemplates='extend')
 
     def find_parent_templates(self, template_name: str):
-        """Поиск шаблонов, начинающихся на указанный текст
-
-        :rtype: list[ZabbixTemplate]
-        """
-        return list(filter(lambda t: re.match(template_name, t.host), self.parent_templates))
+        """Поиск шаблонов, начинающихся на указанный текст"""
+        return filter(lambda t: re.match(template_name, t.host), self.parent_templates)
 
     @property
     def interfaces(self):
