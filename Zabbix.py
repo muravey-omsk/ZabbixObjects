@@ -236,7 +236,7 @@ class ZabbixInterface(Zabbix):
         return self._z_interface.get('ip')
 
     @ip.setter
-    def ip(self, value):
+    def ip(self, value: str):
         self._update(ip=value)
         self._z_interface['ip'] = value
 
