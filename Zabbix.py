@@ -453,12 +453,18 @@ class ZabbixHost(Zabbix):
         self._update(inventory=self._z_host.get('inventory'))
 
     def update_or_create_macro(self, macro: str, value: str):
+        """Обновить или создать новый макрос
+
+        :param macro: Имя макроса
+        :param value: Значение макросв
+        :return:
+        """
         zabbix_macro = self.get_macro(macro)
-        if zabbix_macro:
+        if zabbix_macro and zabbix_macro != value:
             zabbix_macro.value = value
-            return zabbix_macro
         else:
-            return ZabbixMacro.new(self._zapi, self.hostid, macro, value)
+            zabbix_macro = ZabbixMacro.new(self._zapi, self.hostid, macro, value)
+        return zabbix_macro
 
 
 class ZabbixTrigger(Zabbix):
