@@ -74,18 +74,8 @@ class ZabbixMacroFactory(ZabbixFactory):
         return self.get_by_filter({'macro': name, 'value': value})
 
     def new(self, hostid: int, macro: str, value: str = ''):
-        """Создание нового макроса в ZabbixAPI
-
-        :rtype: ZabbixMacro
-        """
-        usermacro_create = dict(
-            hostid=hostid,
-            macro=macro,
-            value=value,
-        )
-        with no_index('Ошибка создания макроса'):
-            z_hostmacroid = self._zapi.usermacro.create(**usermacro_create)['hostmacroids'][0]
-            return self.make(dict(hostmacroid=z_hostmacroid))
+        """Создание нового макроса в ZabbixAPI"""
+        return ZabbixMacro.new(self._zapi, hostid, macro, value)
 
 
 class ZabbixTemplateFactory(ZabbixFactory):

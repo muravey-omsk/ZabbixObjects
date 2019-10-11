@@ -127,6 +127,18 @@ class ZabbixMacro(Zabbix):
     def value(self, value: str):
         self._update(value=value)
 
+    @classmethod
+    def new(cls, zapi: ZabbixAPI, hostid: int, macro: str, value: str):
+        """Создание нового макроса в ZabbixAPI"""
+        usermacro_create = dict(
+            hostid=hostid,
+            macro=macro,
+            value=value,
+        )
+        with no_index('Ошибка создания макроса'):
+            z_hostmacroid = zapi.usermacro.create(**usermacro_create)['hostmacroids'][0]
+            return cls(zapi, dict(hostmacroid=z_hostmacroid))
+
 
 class ZabbixTemplate(Zabbix):
     """Класс для работы с шаблонами Zabbix"""
