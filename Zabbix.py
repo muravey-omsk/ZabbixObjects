@@ -452,6 +452,14 @@ class ZabbixHost(Zabbix):
         self._z_host['inventory'].update(value)
         self._update(inventory=self._z_host.get('inventory'))
 
+    def update_or_create_macro(self, macro: str, value: str):
+        zabbix_macro = self.get_macro(macro)
+        if zabbix_macro:
+            zabbix_macro.value = value
+            return zabbix_macro
+        else:
+            return ZabbixMacro.new(self._zapi, self.hostid, macro, value)
+
 
 class ZabbixTrigger(Zabbix):
     """Класс для работы с узлами Zabbix"""
