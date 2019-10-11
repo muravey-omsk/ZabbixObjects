@@ -393,11 +393,8 @@ class ZabbixHost(Zabbix):
         return self._macros
 
     def get_macro(self, macro: str):
-        """Получение пользовательского макроса (объект типа ZabbixMacro)
-
-        :rtype: ZabbixMacro
-        """
-        return list(filter(lambda m: m.name == macro, self.macros))[0]
+        """Получение пользовательского макроса (объект типа ZabbixMacro) """
+        return next(filter(lambda m: m.name == macro, self.macros))  # первый найденный по имени
 
     @property
     def parent_templates(self):
