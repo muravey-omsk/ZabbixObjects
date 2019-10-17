@@ -368,11 +368,13 @@ class ZabbixHost(Zabbix):
     @classmethod
     def get_by_id(cls, zapi: ZabbixAPI, hostid: int):
         """Создание объекта ZabbixHost из ZabbixAPI"""
-        z_host: dict = zapi.host.get(
+        host_get = dict(
             output='extend',
             hostids=[hostid],
-        )[0]
-        return cls(zapi, z_host)
+        )
+        with no_index('Узел не найдей'):
+            z_host: dict = zapi.host.get(**host_get)[0]
+            return cls(zapi, z_host)
 
     def _get_VIP(self) -> str:
         """Получение статуса коммутатора"""
