@@ -368,10 +368,10 @@ class ZabbixHost(Zabbix):
     @classmethod
     def get_by_id(cls, zapi: ZabbixAPI, hostid: int):
         """Создание объекта ZabbixHost из ZabbixAPI"""
-        z_host = zapi.host.get(
+        z_host: dict = zapi.host.get(
             output='extend',
             hostids=[hostid],
-        )
+        )[0]
         return cls(zapi, z_host)
 
     def _get_VIP(self) -> str:
