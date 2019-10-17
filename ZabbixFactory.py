@@ -3,15 +3,6 @@ from abc import ABC
 from .Zabbix import *
 
 
-@contextmanager
-def no_index(log_message: str):
-    """Менеджер контекста обработки исключения IndexError"""
-    try:
-        yield
-    except IndexError as e:
-        logging.info(log_message + str(e))
-
-
 class ZabbixFactory(ABC):
     def __init__(self, zapi: ZabbixAPI):
         super().__init__()
