@@ -50,17 +50,18 @@ class ZabbixMacroFactory(ZabbixFactory):
     def make(self, macro: dict):
         return ZabbixMacro(self._zapi, macro)
 
-    def get_by_filter(self, _filter: dict):
+    def get_by_filter(self, _filter: dict, **kwargs):
         """Получение макроса из ZabbixAPI по фильтру"""
         usermacro_get = dict(
             output='extend',
             filter=_filter,
         )
+        usermacro_get.update(kwargs)
         z_macros = self._zapi.usermacro.get(**usermacro_get)
         return (self.make(m) for m in z_macros)
 
     def get_by_macro(self, name: str, value: str):
-        return self.get_by_filter({'macro': name, 'value': value})
+        return self.get_by_filter({'macro': name}, search={'value': value})
 
     def new(self, hostid: int, macro: str, value: str = ''):
         """Создание нового макроса в ZabbixAPI"""
