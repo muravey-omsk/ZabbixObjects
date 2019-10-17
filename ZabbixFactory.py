@@ -3,10 +3,8 @@ from abc import ABC
 from .Zabbix import *
 
 
-class ZabbixFactory(ABC):
-    def __init__(self, zapi: ZabbixAPI):
-        super().__init__()
-        self._zapi = zapi
+class ZabbixFactory(Zabbix, ABC):
+    pass
 
 
 class ZabbixGroupFactory(ZabbixFactory):
