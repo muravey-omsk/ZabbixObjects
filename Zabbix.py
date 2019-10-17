@@ -22,12 +22,14 @@ class Zabbix:
     Возможно выбрасывание исключений ZabbixAPIException
     Требуется обработка прерываний"""
 
-    def __init__(self, zapi: ZabbixAPI):
+    def __init__(self, zapi: ZabbixAPI, log=logging):
         """
 
         :param zapi: ссылка на объект ZabbixAPI
+        :param log: куда писать логи
         """
         self._zapi = zapi
+        self.log = log
 
 
 class ZabbixGroup(Zabbix):
