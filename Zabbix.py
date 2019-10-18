@@ -414,7 +414,7 @@ class ZabbixHost(Zabbix):
 
     def get_macro(self, macro: str):
         """Получение пользовательского макроса (объект типа ZabbixMacro) """
-        return next(filter(lambda m: m.name == macro, self.macros))  # первый найденный по имени
+        return next(filter(lambda m: m.name == macro, self.macros), None)  # первый найденный по имени
 
     @property
     def parent_templates(self):
@@ -442,7 +442,7 @@ class ZabbixHost(Zabbix):
         return self._interfaces
 
     def get_main_interface(self):
-        main_interface = next(filter(lambda i: int(i.main) == 1, self.interfaces))
+        main_interface = next(filter(lambda i: int(i.main) == 1, self.interfaces), None)
         return main_interface
 
     def get_ip(self):
