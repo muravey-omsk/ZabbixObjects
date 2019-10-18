@@ -1,18 +1,8 @@
 import logging
 import re
 import time
-from contextlib import contextmanager
 
 from pyzabbix import ZabbixAPI
-
-
-@contextmanager
-def no_index(log_message: str):
-    """Менеджер контекста обработки исключения IndexError"""
-    try:
-        yield
-    except IndexError as e:
-        logging.info(log_message + str(e))
 
 
 class Zabbix:
@@ -54,13 +44,15 @@ class ZabbixGroup(Zabbix):
     @classmethod
     def get_by_id(cls, zapi: ZabbixAPI, groupid: int):
         """Создание объекта ZabbixGroup из ZabbixAPI"""
-        with no_index('Zabbix group not found'):
+        try:
             hostgroup_get = dict(
                 output='extend',
                 groupids=[groupid],
             )
             z_group = zapi.hostgroup.get(**hostgroup_get)[0]
             return cls(zapi, z_group)
+        except IndexError as e:
+            logging.warning('Не найдена группа Zabbix: ' + str(e))
 
 
 class ZabbixMacro(Zabbix):
@@ -83,13 +75,15 @@ class ZabbixMacro(Zabbix):
 
     def _get(self):
         """Получение всех данных макроса из ZabbixAPI"""
-        usermacro_get = dict(
-            output='extend',
-            hostmacroids=[self._z_macro['hostmacroid']],
-        )
-        with no_index('Пользовательский макрос не найдер'):
+        try:
+            usermacro_get = dict(
+                output='extend',
+                hostmacroids=[self._z_macro['hostmacroid']],
+            )
             z_macro = self._zapi.usermacro.get(**usermacro_get)[0]
             self._z_macro.update(z_macro)
+        except IndexError as e:
+            logging.error('Ошибка получения данных макроса Zabbix: ' + str(e))
 
     def _update(self, **kwargs):
         """Обновление данных макроса в ZabbixAPI"""
@@ -132,14 +126,16 @@ class ZabbixMacro(Zabbix):
     @classmethod
     def new(cls, zapi: ZabbixAPI, hostid: int, macro: str, value: str):
         """Создание нового макроса в ZabbixAPI"""
-        usermacro_create = dict(
-            hostid=hostid,
-            macro=macro,
-            value=value,
-        )
-        with no_index('Ошибка создания макроса'):
+        try:
+            usermacro_create = dict(
+                hostid=hostid,
+                macro=macro,
+                value=value,
+            )
             z_hostmacroid = zapi.usermacro.create(**usermacro_create)['hostmacroids'][0]
             return cls(zapi, dict(hostmacroid=z_hostmacroid))
+        except IndexError as e:
+            logging.error('Макрос Zabbix не создан: ' + str(e))
 
 
 class ZabbixTemplate(Zabbix):
@@ -159,12 +155,15 @@ class ZabbixTemplate(Zabbix):
 
     def _get(self):
         """Получение всех данных шаблона"""
-        template_get = dict(
-            output='extend',
-            templateids=self._z_template.get('templateid'),
-        )
-        z_template = self._zapi.template.get(**template_get)[0]
-        self._z_template.update(z_template)
+        try:
+            template_get = dict(
+                output='extend',
+                templateids=self._z_template.get('templateid'),
+            )
+            z_template = self._zapi.template.get(**template_get)[0]
+            self._z_template.update(z_template)
+        except IndexError as e:
+            logging.error('Ошибка получения данных шаблона Zabbix: ' + str(e))
 
     @property
     def templateid(self):
@@ -206,13 +205,16 @@ class ZabbixInterface(Zabbix):
 
     def _get(self, **kwargs):
         """Получение всех данных интерфейса из ZabbixAPI"""
-        interface_get = dict(
-            output='extend',
-            interfaceid=self._z_interface.get('interfaceid')
-        )
-        interface_get.update(kwargs)
-        z_interface = self._zapi.hostinterface.get(**interface_get)[0]
-        self._z_interface.update(z_interface)
+        try:
+            interface_get = dict(
+                output='extend',
+                interfaceid=self._z_interface.get('interfaceid')
+            )
+            interface_get.update(kwargs)
+            z_interface = self._zapi.hostinterface.get(**interface_get)[0]
+            self._z_interface.update(z_interface)
+        except IndexError as e:
+            logging.error('Ошибка получения данных интерфейса узла Zabbix: ' + str(e))
 
     def _update(self, **kwargs):
         """Обновление данных узла в ZabbixAPI"""
@@ -298,14 +300,16 @@ class ZabbixHost(Zabbix):
 
     def _get(self, **kwargs):
         """Получение всех данных узла из ZabbixAPI"""
-        host_get = dict(
-            output='extend',
-            hostids=self._z_host['hostid'],
-        )
-        host_get.update(kwargs)
-        with no_index('Узел не найден'):
+        try:
+            host_get = dict(
+                output='extend',
+                hostids=self._z_host['hostid'],
+            )
+            host_get.update(kwargs)
             z_host = self._zapi.host.get(**host_get)[0]
             self._z_host.update(z_host)
+        except IndexError as e:
+            logging.error('Ошибка получения данных узла Zabbix: ' + str(e))
 
     def _update(self, **kwargs):
         """Обновление данных узла в ZabbixAPI"""
@@ -368,13 +372,15 @@ class ZabbixHost(Zabbix):
     @classmethod
     def get_by_id(cls, zapi: ZabbixAPI, hostid: int):
         """Создание объекта ZabbixHost из ZabbixAPI"""
-        host_get = dict(
-            output='extend',
-            hostids=hostid,
-        )
-        with no_index('Узел не найдей'):
+        try:
+            host_get = dict(
+                output='extend',
+                hostids=hostid,
+            )
             z_host: dict = zapi.host.get(**host_get)[0]
             return cls(zapi, z_host)
+        except IndexError as e:
+            logging.warning('Ошибка получения узла Zabbix: ' + str(e))
 
     def _get_VIP(self) -> str:
         """Получение статуса коммутатора"""
@@ -534,28 +540,32 @@ class ZabbixTrigger(Zabbix):
 
     def _get(self, **kwargs):
         """Получение всех данных триггера из ZabbixAPI"""
-        trigger_get = dict(
-            output='extend',
-            triggerids=self._z_trigger['triggerid'],
-        )
-        trigger_get.update(kwargs)
-        with no_index('Триггер не найден'):
+        try:
+            trigger_get = dict(
+                output='extend',
+                triggerids=self._z_trigger['triggerid'],
+            )
+            trigger_get.update(kwargs)
             z_trigger = self._zapi.trigger.get(**trigger_get)[0]
             self._z_trigger.update(z_trigger)
+        except IndexError as e:
+            logging.error('Ошибка получения данных триггера Zabbix: ' + str(e))
 
     @classmethod
     def get_by_id(cls, zapi: ZabbixAPI, triggerid: int):
-        trigger_get = dict(
-            output='extend',
-            triggerids=[triggerid],
-            expandExpression='true',
-            expandDescription='true',
-            expandData='true',
-            selectHosts='extend',
-        )
-        with no_index('Триггер не найден'):
+        try:
+            trigger_get = dict(
+                output='extend',
+                triggerids=[triggerid],
+                expandExpression='true',
+                expandDescription='true',
+                expandData='true',
+                selectHosts='extend',
+            )
             z_trigger = zapi.trigger.get(**trigger_get)[0]
             return cls(ZabbixHost(zapi, z_trigger['hosts'][0]), z_trigger)
+        except IndexError as e:
+            logging.warning('Ошибка получения триггера Zabbix: ' + str(e))
 
     @property
     def triggerid(self) -> int:
@@ -635,27 +645,31 @@ class ZabbixEvent(Zabbix):
 
     def _get(self, **kwargs):
         """Получение всех данных узла из ZabbixAPI"""
-        event_get = dict(
-            output='extend',
-            eventids=self._z_event['eventid'],
-        )
-        event_get.update(kwargs)
-        with no_index('Событие не найдено'):
+        try:
+            event_get = dict(
+                output='extend',
+                eventids=self._z_event['eventid'],
+            )
+            event_get.update(kwargs)
             z_event = self._trigger.host._zapi.event.get(**event_get)[0]
             self._z_event.update(z_event)
+        except IndexError as e:
+            logging.error('Ошибка получения данных события Zabbix: ' + str(e))
 
     @classmethod
     def get_by_id(cls, zapi: ZabbixAPI, eventid: int):
         """Создание объекта ZabbixEvent из ZabbixAPI"""
-        event_get = dict(
-            output='extend',
-            eventids=[eventid],
-        )
-        with no_index('Событие не создано'):
+        try:
+            event_get = dict(
+                output='extend',
+                eventids=[eventid],
+            )
             z_event = zapi.event.get(**event_get)[0]
             trigger = ZabbixTrigger.get_by_id(zapi, z_event['objectid'])
             if trigger:
                 return cls(trigger, z_event)
+        except IndexError as e:
+            logging.warning('Ошибка получения события Zabbix' + str(e))
 
     @property
     def eventid(self) -> int:

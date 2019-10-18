@@ -14,13 +14,17 @@ class ZabbixGroupFactory(ZabbixFactory):
 
     def get_by_id(self, groupid: int):
         """Создание объекта ZabbixGroup из ZabbixAPI"""
-        with no_index('Zabbix group not found'):
+        try:
             hostgroup_get = dict(
                 output='extend',
                 groupids=[groupid],
             )
             z_group = self._zapi.hostgroup.get(**hostgroup_get)[0]
             return ZabbixGroup(self._zapi, z_group)
+        except IndexError as e:
+            logging.warning('Ошибка получения группы Zabbix: ' + str(e))
+        except KeyError as e:
+            logging.error('Ошибка получения группы Zabbix без groupids: ' + str(e))
 
     def get_by_filter(self, _filter: dict):
         """Получение списка объектов ZabbixGroup из ZabbixAPI по фильтру"""
@@ -40,9 +44,11 @@ class ZabbixGroupFactory(ZabbixFactory):
 
     def new(self, groupname: str):
         """Создание нового узлв в ZabbixAPI"""
-        z_groups = self._zapi.hostgroup.create(name=groupname)
-        with no_index('Ошибка создания группы'):
+        try:
+            z_groups = self._zapi.hostgroup.create(name=groupname)
             return self.make(z_groups.get('groupids')[0])
+        except IndexError as e:
+            logging.error('Ошибка создания группы Zabbix: ' + str(e))
 
 
 class ZabbixMacroFactory(ZabbixFactory):
@@ -113,13 +119,16 @@ class ZabbixHostFactory(ZabbixFactory):
 
     def get_by_filter(self, _filter: dict, **options):
         """Получение списка объектов ZabbixHost из ZabbixAPI по фильтру"""
-        host_get = dict(
-            output=options.get('output', 'extend'),
-            filter=_filter,
-        )
-        host_get.update(options)
-        z_hosts = self._zapi.host.get(**host_get)
-        return [self.make(z_host) for z_host in z_hosts]
+        try:
+            host_get = dict(
+                output=options.get('output', 'extend'),
+                filter=_filter,
+            )
+            host_get.update(options)
+            z_hosts = self._zapi.host.get(**host_get)
+            return [self.make(z_host) for z_host in z_hosts]
+        except IndexError as e:
+            logging.warning('Ошибка получения узла Zabbix: ' + str(e))
 
     def get_by_name(self, _name: str):
         """Получение списка узлов ZabbixHost из ZabbixAPI по видимому имени"""
@@ -139,24 +148,28 @@ class ZabbixHostFactory(ZabbixFactory):
 
         :rtype: ZabbixHost
         """
-        if not host.get('host'):
-            raise ValueError
-        z_host = dict()
-        with no_index('Ошибка создания узла'):
+        try:
+            if not host.get('host'):
+                raise ValueError
+            z_host = dict()
             z_host['hostid'] = self._zapi.host.create(**host)['hostids'][0]
             return self.make(z_host)
+        except IndexError as e:
+            logging.error('Ошибка создания узла: ' + str(e))
 
 
 class ZabbixTriggerFactory(ZabbixFactory):
 
     def _get_host_by_triggerid(self, triggerid: int):
-        with no_index('Триггер не найден'):
+        try:
             z_host = self._zapi.trigger.get(
                 output='hosts',
                 triggerids=triggerid,
                 selectHosts=['extend'],
             )[0]
             return ZabbixHost(self._zapi, z_host)
+        except IndexError as e:
+            logging.warning('Ошибка получения узла по триггеру Zabbix: ' + str(e))
 
     def make(self, trigger: dict):
         host = self._get_host_by_triggerid(int(trigger['triggerid']))
@@ -169,7 +182,7 @@ class ZabbixTriggerFactory(ZabbixFactory):
 class ZabbixEventFactory(ZabbixFactory):
 
     def _get_trigger_by_eventid(self, eventid: int):
-        with no_index('Событие не найдено'):
+        try:
             z_event = self._zapi.event.get(
                 output=['relatedObject', 'hosts'],
                 eventids=eventid,
@@ -180,6 +193,8 @@ class ZabbixEventFactory(ZabbixFactory):
             z_host = z_event['hosts'][0]
             host = ZabbixHost(self._zapi, z_host)
             return ZabbixTrigger(host, z_trigger)
+        except IndexError as e:
+            logging.warning('Ошибка получения триггера по событию Zabbix: ' + str(e))
 
     def make(self, event: dict):
         trigger = self._get_trigger_by_eventid(event['eventid'])
