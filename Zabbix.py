@@ -643,6 +643,9 @@ class ZabbixEvent(Zabbix):
         self._trigger = trigger
         self._z_event = event
 
+    def __str__(self) -> str:
+        return self.name
+
     def _get(self, **kwargs):
         """Получение всех данных узла из ZabbixAPI"""
         try:
@@ -690,6 +693,12 @@ class ZabbixEvent(Zabbix):
         if not self._z_event.get('acknowledged'):
             self._get()
         return int(self._z_event.get('acknowledged'))
+
+    @property
+    def name(self):
+        if not self._z_event.get('name'):
+            self._get()
+        return str(self._z_event.get('name'))
 
     def ack(self, message, action=6):
         """Подтверждаем в Zabbix
