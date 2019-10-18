@@ -370,7 +370,7 @@ class ZabbixHost(Zabbix):
         """Создание объекта ZabbixHost из ZabbixAPI"""
         host_get = dict(
             output='extend',
-            hostids=[hostid],
+            hostids=hostid,
         )
         with no_index('Узел не найдей'):
             z_host: dict = zapi.host.get(**host_get)[0]
