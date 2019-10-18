@@ -22,9 +22,9 @@ class ZabbixGroupFactory(ZabbixFactory):
             z_group = self._zapi.hostgroup.get(**hostgroup_get)[0]
             return ZabbixGroup(self._zapi, z_group)
         except IndexError as e:
-            logging.warning('Ошибка получения группы Zabbix: ' + str(e))
+            log.warning('Ошибка получения группы Zabbix: ' + str(e))
         except KeyError as e:
-            logging.error('Ошибка получения группы Zabbix без groupids: ' + str(e))
+            log.error('Ошибка получения группы Zabbix без groupids: ' + str(e))
 
     def get_by_filter(self, _filter: dict):
         """Получение списка объектов ZabbixGroup из ZabbixAPI по фильтру"""
@@ -48,7 +48,7 @@ class ZabbixGroupFactory(ZabbixFactory):
             z_groups = self._zapi.hostgroup.create(name=groupname)
             return self.make(z_groups.get('groupids')[0])
         except IndexError as e:
-            logging.error('Ошибка создания группы Zabbix: ' + str(e))
+            log.error('Ошибка создания группы Zabbix: ' + str(e))
 
 
 class ZabbixMacroFactory(ZabbixFactory):
@@ -128,7 +128,7 @@ class ZabbixHostFactory(ZabbixFactory):
             z_hosts = self._zapi.host.get(**host_get)
             return [self.make(z_host) for z_host in z_hosts]
         except IndexError as e:
-            logging.warning('Ошибка получения узла Zabbix: ' + str(e))
+            log.warning('Ошибка получения узла Zabbix: ' + str(e))
 
     def get_by_name(self, _name: str):
         """Получение списка узлов ZabbixHost из ZabbixAPI по видимому имени"""
@@ -155,7 +155,7 @@ class ZabbixHostFactory(ZabbixFactory):
             z_host['hostid'] = self._zapi.host.create(**host)['hostids'][0]
             return self.make(z_host)
         except IndexError as e:
-            logging.error('Ошибка создания узла: ' + str(e))
+            log.error('Ошибка создания узла: ' + str(e))
 
 
 class ZabbixTriggerFactory(ZabbixFactory):
@@ -169,7 +169,7 @@ class ZabbixTriggerFactory(ZabbixFactory):
             )[0]
             return ZabbixHost(self._zapi, z_host)
         except IndexError as e:
-            logging.warning('Ошибка получения узла по триггеру Zabbix: ' + str(e))
+            log.warning('Ошибка получения узла по триггеру Zabbix: ' + str(e))
 
     def make(self, trigger: dict):
         host = self._get_host_by_triggerid(int(trigger['triggerid']))
@@ -194,7 +194,7 @@ class ZabbixEventFactory(ZabbixFactory):
             host = ZabbixHost(self._zapi, z_host)
             return ZabbixTrigger(host, z_trigger)
         except IndexError as e:
-            logging.warning('Ошибка получения триггера по событию Zabbix: ' + str(e))
+            log.warning('Ошибка получения триггера по событию Zabbix: ' + str(e))
 
     def make(self, event: dict):
         trigger = self._get_trigger_by_eventid(event['eventid'])
