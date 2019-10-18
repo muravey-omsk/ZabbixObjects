@@ -647,14 +647,14 @@ class ZabbixEvent(Zabbix):
         return self.name
 
     def _get(self, **kwargs):
-        """Получение всех данных узла из ZabbixAPI"""
+        """Получение всех данных события из ZabbixAPI"""
         try:
             event_get = dict(
                 output='extend',
                 eventids=self._z_event['eventid'],
             )
             event_get.update(kwargs)
-            z_event = self._trigger.host._zapi.event.get(**event_get)[0]
+            z_event = self._zapi.event.get(**event_get)[0]
             self._z_event.update(z_event)
         except IndexError as e:
             logging.error('Ошибка получения данных события Zabbix: ' + str(e))
@@ -718,3 +718,22 @@ class ZabbixEvent(Zabbix):
         )
         self._zapi.event.acknowledge(**event_ack)
         self._z_event['acknowledged'] = 1
+
+
+class ZabbixProblem(ZabbixEvent):
+    """Класс для работы с пролемами Zabbix"""
+
+    @classmethod
+    def get_by_id(cls, zapi: ZabbixAPI, problemid: int):
+        """Создание объекта ZabbixEvent из ZabbixAPI"""
+        try:
+            event_get = dict(
+                output='extend',
+                eventids=[problemid],
+            )
+            z_event = zapi.problem.get(**event_get)[0]
+            trigger = ZabbixTrigger.get_by_id(zapi, z_event['objectid'])
+            if trigger:
+                return cls(trigger, z_event)
+        except IndexError as e:
+            logging.warning('Ошибка получения события Zabbix' + str(e))
