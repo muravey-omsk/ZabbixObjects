@@ -73,6 +73,9 @@ class ZabbixMacro(Zabbix):
     def __str__(self):
         return self.name
 
+    def __format__(self, format_spec: str) -> str:
+        return self.name
+
     def _get(self):
         """Получение всех данных макроса из ZabbixAPI"""
         try:
@@ -371,6 +374,9 @@ class ZabbixHost(Zabbix):
     def __str__(self) -> str:
         return self.host
 
+    def __format__(self, format_spec: str) -> str:
+        return self.host
+
     @classmethod
     def get_by_id(cls, zapi: ZabbixAPI, hostid: int):
         """Создание объекта ZabbixHost из ZabbixAPI"""
@@ -648,6 +654,9 @@ class ZabbixEvent(Zabbix):
         self._z_event = event
 
     def __str__(self) -> str:
+        return self.name
+
+    def __format__(self, format_spec: str) -> str:
         return self.name
 
     def _get(self, **kwargs):
