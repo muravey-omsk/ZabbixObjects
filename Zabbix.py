@@ -66,7 +66,7 @@ class ZabbixMacro(Zabbix):
         :rtype: ZabbixMacro
         """
         if not macro.get('hostmacroid'):
-            raise ValueError
+            raise KeyError
         super().__init__(zapi)
         self._z_macro = macro
 
@@ -364,7 +364,7 @@ class ZabbixHost(Zabbix):
         :rtype: ZabbixHost
         """
         if not host.get('hostid'):
-            raise ValueError
+            raise KeyError
         super().__init__(zapi)
         self._z_host = host
         self._macros = list()  # список ZabbixMacro

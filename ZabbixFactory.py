@@ -150,7 +150,7 @@ class ZabbixHostFactory(ZabbixFactory):
         """
         try:
             if not host.get('host'):
-                raise ValueError
+                raise KeyError
             z_host = dict()
             z_host['hostid'] = self._zapi.host.create(**host)['hostids'][0]
             return self.make(z_host)
