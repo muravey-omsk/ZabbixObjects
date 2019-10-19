@@ -1,8 +1,10 @@
-import logging as log
+import logging
 import re
 import time
 
 from pyzabbix import ZabbixAPI
+
+log = logging.getLogger(__name__)
 
 
 class Zabbix:
