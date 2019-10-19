@@ -112,6 +112,7 @@ class ZabbixMacro(Zabbix):
     @name.setter
     def name(self, value: str):
         self._update(macro=value)
+        self._z_macro['macro'] = value
 
     @property
     def value(self) -> str:
@@ -122,6 +123,7 @@ class ZabbixMacro(Zabbix):
     @value.setter
     def value(self, value: str):
         self._update(value=value)
+        self._z_macro['value'] = value
 
     @classmethod
     def new(cls, zapi: ZabbixAPI, hostid: int, macro: str, value: str):
