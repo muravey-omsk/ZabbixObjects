@@ -472,8 +472,9 @@ class ZabbixHost(Zabbix):
         :return:
         """
         zabbix_macro = self.get_macro(macro)
-        if zabbix_macro and zabbix_macro != value:
-            zabbix_macro.value = value
+        if zabbix_macro:
+            if zabbix_macro != value:
+                zabbix_macro.value = value
         else:
             zabbix_macro = ZabbixMacro.new(self._zapi, self.hostid, macro, value)
         return zabbix_macro
