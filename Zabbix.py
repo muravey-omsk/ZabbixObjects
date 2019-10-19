@@ -396,6 +396,7 @@ class ZabbixHost(Zabbix):
 
     @property
     def status(self) -> int:
+        """0 -> активен, 1 -> не активен"""
         if self._z_host.get('status') is None:
             self._get()
         return int(self._z_host.get('status'))
