@@ -473,7 +473,7 @@ class ZabbixHost(Zabbix):
         """
         zabbix_macro = self.get_macro(macro)
         if zabbix_macro:
-            if zabbix_macro != value:
+            if zabbix_macro.value != value:
                 zabbix_macro.value = value
         else:
             zabbix_macro = ZabbixMacro.new(self._zapi, self.hostid, macro, value)
