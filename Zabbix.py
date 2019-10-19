@@ -480,7 +480,7 @@ class ZabbixHost(Zabbix):
         """
         zabbix_macro = self.get_macro(macro)
         if zabbix_macro:
-            if repr(zabbix_macro.value) != repr(value):
+            if str(zabbix_macro.value) != str(value):
                 log.info(f"{self:12}: Меняю макрос {macro} с {zabbix_macro.value} на {value}")
                 zabbix_macro.value = value
         else:
