@@ -67,7 +67,7 @@ class ZabbixMacroFactory(ZabbixFactory):
         return (self.make(m) for m in z_macros)
 
     def get_by_macro(self, name: str, value: str):
-        return self.get_by_filter({'macro': name, 'value': value})
+        return self.get_by_filter({'macro': name}, search={'value': value}, searchWildcardsEnabled=True)
 
     def new(self, hostid: int, macro: str, value: str = ''):
         """Создание нового макроса в ZabbixAPI"""
