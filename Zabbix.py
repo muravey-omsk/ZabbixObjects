@@ -481,8 +481,10 @@ class ZabbixHost(Zabbix):
         zabbix_macro = self.get_macro(macro)
         if zabbix_macro:
             if zabbix_macro.value != value:
+                log.info(f"{self:12}: Меняю макрос {macro} на {value}")
                 zabbix_macro.value = value
         else:
+            log.info(f"{self:12}: Устанавливаю макрос {macro} на {value}")
             zabbix_macro = ZabbixMacro.new(self._zapi, self.hostid, macro, value)
         return zabbix_macro
 
