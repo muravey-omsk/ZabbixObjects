@@ -470,6 +470,7 @@ class ZabbixHost(Zabbix):
 
     @inventory.setter
     def inventory(self, value: dict):
+        log.info(f"{self:12}: Меняю инвентарные данные {','.join(value.keys())}")
         try:
             self._z_host['inventory'].update(value)
             self._update(inventory=self._z_host.get('inventory'))
