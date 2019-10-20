@@ -2,7 +2,7 @@ import logging
 import re
 import time
 
-from pyzabbix import ZabbixAPI
+from pyzabbix import ZabbixAPI, ZabbixAPIException
 
 log = logging.getLogger(__name__)
 
@@ -470,8 +470,11 @@ class ZabbixHost(Zabbix):
 
     @inventory.setter
     def inventory(self, value: dict):
-        self._z_host['inventory'].update(value)
-        self._update(inventory=self._z_host.get('inventory'))
+        try:
+            self._z_host['inventory'].update(value)
+            self._update(inventory=self._z_host.get('inventory'))
+        except ZabbixAPIException as e:
+            log.error("Ошибка обновления инвентарных данных: " + str(e.data))
 
     def update_or_create_macro(self, macro: str, value: str):
         """Обновить или создать новый макрос
