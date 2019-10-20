@@ -46,7 +46,7 @@ class ZabbixGroupFactory(ZabbixFactory):
         """Создание нового узлв в ZabbixAPI"""
         try:
             z_groups = self._zapi.hostgroup.create(name=groupname)
-            return self.make(z_groups.get('groupids')[0])
+            return self.make({'groupid': z_groups.get('groupids')[0]})
         except IndexError as e:
             log.error('Ошибка создания группы Zabbix: ' + str(e))
 
