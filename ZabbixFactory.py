@@ -126,7 +126,7 @@ class ZabbixHostFactory(ZabbixFactory):
             )
             host_get.update(options)
             z_hosts = self._zapi.host.get(**host_get)
-            return [self.make(z_host) for z_host in z_hosts]
+            return (self.make(z_host) for z_host in z_hosts)
         except IndexError as e:
             log.warning('Ошибка получения узла Zabbix: ' + str(e))
 
