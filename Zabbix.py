@@ -464,6 +464,8 @@ class ZabbixHost(Zabbix):
     def inventory(self) -> dict:
         if not self._z_host.get('inventory'):
             self._get(output='inventory', selectInventory='extend')
+            del self._z_host['inventory']['hostid']
+            del self._z_host['inventory']['inventory_mode']
         return self._z_host.get('inventory')
 
     @inventory.setter
