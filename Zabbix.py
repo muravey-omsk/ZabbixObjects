@@ -488,6 +488,10 @@ class ZabbixHost(Zabbix):
             zabbix_macro = ZabbixMacro.new(self._zapi, self.hostid, macro, value)
         return zabbix_macro
 
+    def delete(self):
+        """УДАЛЕНИЕ Zabbix узла"""
+        self._zapi.host.delete([self.hostid])
+
 
 class ZabbixTrigger(Zabbix):
     """Класс для работы с узлами Zabbix"""
