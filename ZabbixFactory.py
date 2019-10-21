@@ -141,11 +141,13 @@ class ZabbixHostFactory(ZabbixFactory):
 
     def search(self, _search: dict, **options):
         """Поиск в ZabbixAPI"""
-        z_hosts = self._zapi.host.get(
-            output=options.get('output', 'extend'),
+        host_get = dict(
+            output='extend',
             search=_search,
             searchWildcardsEnabled=True,
         )
+        host_get.update(options)
+        z_hosts = self._zapi.host.get(host_get)
         return (self.make(host) for host in z_hosts)
 
     def new(self, host: dict):
