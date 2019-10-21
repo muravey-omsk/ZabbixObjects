@@ -136,8 +136,8 @@ class ZabbixHostFactory(ZabbixFactory):
 
     def get_by_group(self, group: ZabbixGroup):
         """Получение списка узлов ZabbixHost из ZabbixAPI по видимому имени"""
-        host = next(self.get_by_filter({}, groupids=group.groupid))
-        return host
+        hosts = self.get_by_filter({}, groupids=group.groupid)
+        return hosts
 
     def search(self, _search: dict, **options):
         """Поиск в ZabbixAPI"""
