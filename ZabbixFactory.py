@@ -147,7 +147,7 @@ class ZabbixHostFactory(ZabbixFactory):
             searchWildcardsEnabled=True,
         )
         host_get.update(options)
-        z_hosts = self._zapi.host.get(host_get)
+        z_hosts = self._zapi.host.get(**host_get)
         return (self.make(host) for host in z_hosts)
 
     def new(self, host: dict):
