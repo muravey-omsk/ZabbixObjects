@@ -134,12 +134,8 @@ class ZabbixHostFactory(ZabbixFactory):
         """Получение списка узлов ZabbixHost из ZabbixAPI по видимому имени"""
         return self.get_by_filter({'host': _name})
 
-    def get_by_group_name(self, group_name: str):
+    def get_by_group(self, group: ZabbixGroup):
         """Получение списка узлов ZabbixHost из ZabbixAPI по видимому имени"""
-        group = next(ZabbixGroupFactory(self._zapi).get_by_name(group_name))
-        if not group:
-            log.error(f"Zabbix группы {group_name} не найдено.")
-            return None
         host = next(self.get_by_filter({}, groupids=group.groupid))
         return host
 
