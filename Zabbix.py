@@ -390,16 +390,18 @@ class ZabbixHost(Zabbix):
     @classmethod
     def get_by_id(cls, zapi: ZabbixAPI, hostid: int):
         """Создание объекта ZabbixHost из ZabbixAPI"""
+        host_get = dict(
+            output='extend',
+            hostids=hostid,
+        )
         try:
-            host_get = dict(
-                output='extend',
-                hostids=hostid,
-            )
             z_host: dict = zapi.host.get(**host_get)[0]
             return cls(zapi, z_host)
         except IndexError as e:
+            log.debug("host_get: " + str(host_get))
             log.warning("Ошибка получения Zabbix узла: " + str(e.args))
         except ZabbixAPIException as e:
+            log.debug("host_get: " + str(host_get))
             log.error("Ошибка получения Zabbix узла: " + str(e.data))
 
     def _get_VIP(self) -> str:
