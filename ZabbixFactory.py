@@ -168,7 +168,7 @@ class ZabbixHostFactory(ZabbixFactory):
         except IndexError as e:
             log.error("Ошибка создания Zabbix узла: " + str(e.args))
         except ZabbixAPIException as e:
-            log.error("Ошибка получения Zabbix узла: " + str(e.data))
+            log.error("Ошибка создания Zabbix узла: " + str(e.data))
 
 
 class ZabbixTriggerFactory(ZabbixFactory):
