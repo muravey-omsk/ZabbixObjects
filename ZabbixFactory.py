@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import List, Union
 
 from .Zabbix import *
 
@@ -37,11 +38,8 @@ class ZabbixGroupFactory(ZabbixFactory):
         z_group: list = self._zapi.hostgroup.get(**hostgroup_get)
         return (self.make(group) for group in z_group)
 
-    def get_by_name(self, _name: str):
-        """Получение списка объекторв ZabbixGroup из ZabbixAPI по имени
-
-        :type _name: str|list[str]
-        """
+    def get_by_name(self, _name: Union[str, List[str]]):
+        """Получение списка объекторв ZabbixGroup из ZabbixAPI по имени"""
         return self.get_by_filter({'name': _name})
 
     def new(self, groupname: str):
@@ -157,6 +155,9 @@ class ZabbixHostFactory(ZabbixFactory):
     def new(self, host: dict):
         """Создание узла в ZabbixAPI
 
+        :param host: Словарь Zabbix узла.
+            Обязательные ключи: host, groups, interfaces
+        :return: Созданный ZabbixHost объект
         :rtype: ZabbixHost
         """
         if not host.get('host'):
