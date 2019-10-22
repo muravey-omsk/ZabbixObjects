@@ -166,10 +166,10 @@ class ZabbixHostFactory(ZabbixFactory):
             z_host['hostid'] = self._zapi.host.create(**host)['hostids'][0]
         except IndexError as e:
             log.debug("host_get: " + str(host))
-            log.error("Ошибка создания Zabbix узла: " + str(e.args))
+            log.error(f"Ошибка создания Zabbix узла({host.get('host')}): " + str(e.args))
         except ZabbixAPIException as e:
             log.debug("host_get: " + str(host))
-            log.error("Ошибка создания Zabbix узла: " + str(e.data))
+            log.error(f"Ошибка создания Zabbix узла({host.get('host')}): " + str(e.data))
         else:
             return self.make(z_host)
 
