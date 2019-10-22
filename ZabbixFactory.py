@@ -194,6 +194,21 @@ class ZabbixTriggerFactory(ZabbixFactory):
     def get_by_id(self, triggerid: int):
         return ZabbixTrigger.get_by_id(self._zapi, triggerid)
 
+    def get_by_filter(self, _filter: dict, **options):
+        """Получение списка Zabbix триггеров из ZabbixAPI по фильтру"""
+        try:
+            trigger_get = dict(
+                output='extend',
+                filter=_filter,
+            )
+            trigger_get.update(options)
+            z_triggers = self._zapi.trigger.get(**trigger_get)
+            return (self.make(z_trigger) for z_trigger in z_triggers)
+        except IndexError as e:
+            log.warning("Ошибка получения Zabbix триггера: " + str(e.args))
+        except ZabbixAPIException as e:
+            log.error("Ошибка получения Zabbix триггера: " + str(e.data))
+
 
 class ZabbixEventFactory(ZabbixFactory):
 
