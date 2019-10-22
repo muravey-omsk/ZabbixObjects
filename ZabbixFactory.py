@@ -160,7 +160,7 @@ class ZabbixHostFactory(ZabbixFactory):
         :return: Созданный ZabbixHost объект
         :rtype: ZabbixHost
         """
-        if not host.get('host'):
+        if not host.get('host') or not host.get('groups') or not host.get('interfaces'):
             raise KeyError
         z_host = dict()
         try:
