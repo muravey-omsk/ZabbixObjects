@@ -155,7 +155,7 @@ class ZabbixHostFactory(ZabbixFactory):
         return (self.make(host) for host in z_hosts)
 
     def new(self, host: dict):
-        """Создание нового макроса в ZabbixAPI
+        """Создание узла в ZabbixAPI
 
         :rtype: ZabbixHost
         """
@@ -164,12 +164,9 @@ class ZabbixHostFactory(ZabbixFactory):
         z_host = dict()
         try:
             z_host['hostid'] = self._zapi.host.create(**host)['hostids'][0]
-        except IndexError as e:
+        except (IndexError, ZabbixAPIException) as e:
             log.debug("host_get: " + str(host))
             log.error(f"Ошибка создания Zabbix узла({host.get('host')}): " + str(e.args))
-        except ZabbixAPIException as e:
-            log.debug("host_get: " + str(host))
-            log.error(f"Ошибка создания Zabbix узла({host.get('host')}): " + str(e.data))
         else:
             return self.make(z_host)
 
