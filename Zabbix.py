@@ -482,7 +482,7 @@ class ZabbixHost(Zabbix):
 
     @inventory.setter
     def inventory(self, value: dict):
-        log.info(f"{self:12}: Меняю инвентарные данные {','.join(value.keys())}")
+        log.info(f"{str(self):12}: Меняю инвентарные данные {','.join(value.keys())}")
         try:
             self._z_host['inventory'].update(value)
             self._update(inventory=self._z_host.get('inventory'))
@@ -499,10 +499,10 @@ class ZabbixHost(Zabbix):
         zabbix_macro = self.get_macro(macro)
         if zabbix_macro:
             if str(zabbix_macro.value) != str(value):
-                log.info(f"{self:12}: Меняю макрос {macro} с '{zabbix_macro.value}' на '{value}'")
+                log.info(f"{str(self):12}: Меняю макрос {macro} с '{str(zabbix_macro.value)}' на '{value}'")
                 zabbix_macro.value = value
         else:
-            log.info(f"{self:12}: Устанавливаю макрос {macro} в '{value}'")
+            log.info(f"{str(self):12}: Устанавливаю макрос {macro} в '{value}'")
             zabbix_macro = ZabbixMacro.new(self._zapi, self.hostid, macro, value)
         return zabbix_macro
 
