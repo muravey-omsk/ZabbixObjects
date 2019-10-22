@@ -1,6 +1,7 @@
 import logging
 import re
 import time
+from typing import List
 
 from pyzabbix import ZabbixAPI, ZabbixAPIException
 
@@ -626,6 +627,13 @@ class ZabbixTrigger(Zabbix):
         if not self._z_trigger.get('description'):
             self._get()
         return self._z_trigger.get('description')
+
+    @property
+    def dependencies(self):
+        if not self._z_trigger.get('dependencies'):
+            self._get(selectDependencies=True)
+        _dependencies: List[dict] = self._z_trigger.get('dependencies')
+        return (ZabbixTrigger(self.host, _dependency) for _dependency in _dependencies)
 
     def _get_last_events(self, since=None, limit=10, acknowledged=None, value=None):
         """Получение последних событий из Zabbix API по триггеру"""
