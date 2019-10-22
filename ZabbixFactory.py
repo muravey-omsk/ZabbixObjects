@@ -159,16 +159,18 @@ class ZabbixHostFactory(ZabbixFactory):
 
         :rtype: ZabbixHost
         """
+        if not host.get('host'):
+            raise KeyError
+        z_host = dict()
         try:
-            if not host.get('host'):
-                raise KeyError
-            z_host = dict()
             z_host['hostid'] = self._zapi.host.create(**host)['hostids'][0]
-            return self.make(z_host)
         except IndexError as e:
+            log.debug("host_get: " + str(host))
             log.error("Ошибка создания Zabbix узла: " + str(e.args))
         except ZabbixAPIException as e:
+            log.debug("host_get: " + str(host))
             log.error("Ошибка создания Zabbix узла: " + str(e.data))
+        return self.make(z_host)
 
 
 class ZabbixTriggerFactory(ZabbixFactory):
