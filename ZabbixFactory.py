@@ -170,7 +170,8 @@ class ZabbixHostFactory(ZabbixFactory):
         except ZabbixAPIException as e:
             log.debug("host_get: " + str(host))
             log.error("Ошибка создания Zabbix узла: " + str(e.data))
-        return self.make(z_host)
+        else:
+            return self.make(z_host)
 
 
 class ZabbixTriggerFactory(ZabbixFactory):
