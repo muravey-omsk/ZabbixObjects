@@ -639,7 +639,7 @@ class ZabbixTrigger(Zabbix):
         """Удаляет все зависимости триггера"""
         try:
             del self._z_trigger['dependencies']
-            deleted = self._zapi.trigger.deleteDependencies({'triggerid': self.triggerid})
+            self._zapi.trigger.deleteDependencies({'triggerid': self.triggerid})
         except ZabbixAPIException as e:
             log.error("Ошибка удаления зависимостей Zabbix триггера: " + str(e.data))
 
