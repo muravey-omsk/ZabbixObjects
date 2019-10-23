@@ -635,6 +635,14 @@ class ZabbixTrigger(Zabbix):
         _dependencies: List[dict] = self._z_trigger.get('dependencies')
         return (ZabbixTrigger(self.host, _dependency) for _dependency in _dependencies)
 
+    def delete_dependency(self, dependencies: List[dict]):
+        """Удаляет все зависимости триггера"""
+        try:
+            del self._z_trigger['dependencies']
+            deleted = self._zapi.trigger.deleteDependencies(dependencies)
+        except ZabbixAPIException as e:
+            log.error("Ошибка удаления зависимостей Zabbix триггера: " + str(e.data))
+
     def _get_last_events(self, since=None, limit=10, acknowledged=None, value=None):
         """Получение последних событий из Zabbix API по триггеру"""
         if since is None:
