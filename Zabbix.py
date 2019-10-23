@@ -635,6 +635,9 @@ class ZabbixTrigger(Zabbix):
         _dependencies: List[dict] = self._z_trigger.get('dependencies')
         return (ZabbixTrigger(self.host, _dependency) for _dependency in _dependencies)
 
+    def add_dependencies(self, depends_on_triggerid: int):
+        self._zapi.trigger.adddependencies({'triggerid': self.triggerid, 'dependsOnTriggerid': depends_on_triggerid})
+
     def delete_dependencies(self):
         """Удаляет все зависимости триггера"""
         try:
