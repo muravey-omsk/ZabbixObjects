@@ -573,7 +573,7 @@ class ZabbixTrigger(Zabbix):
             raise KeyError
         super().__init__(host._zapi)
         self._z_trigger = trigger
-        self._host: ZabbixHost = host
+        self._host = host
 
     def _get(self, **kwargs):
         """Получение всех данных триггера из ZabbixAPI"""
@@ -633,6 +633,8 @@ class ZabbixTrigger(Zabbix):
         if not self._z_trigger.get('dependencies'):
             self._get(selectDependencies=True)
         _dependencies: List[dict] = self._z_trigger.get('dependencies')
+        if not _dependencies:
+            return None
         return (ZabbixTrigger(self.host, _dependency) for _dependency in _dependencies)
 
     def add_dependencies(self, depends_on_triggerid: int):
