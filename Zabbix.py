@@ -633,8 +633,9 @@ class ZabbixTrigger(Zabbix):
         if not self._z_trigger.get('dependencies'):
             self._get(selectDependencies=True)
         _dependencies: List[dict] = self._z_trigger.get('dependencies')
-        for _dependency in _dependencies:
-            yield ZabbixTrigger(self.host, _dependency)
+        if not _dependencies:
+            return None
+        return (ZabbixTrigger(self.host, _dependency) for _dependency in _dependencies)
 
     def add_dependencies(self, depends_on_triggerid: int):
         self._zapi.trigger.adddependencies({'triggerid': self.triggerid, 'dependsOnTriggerid': depends_on_triggerid})
