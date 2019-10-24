@@ -631,7 +631,7 @@ class ZabbixTrigger(Zabbix):
     def get_dependencies(self):
         """Получение всех зависимых триггеров"""
         if not self._z_trigger.get('dependencies'):
-            self._get(selectDependencies=True)
+            self._get(selectDependencies='extend')
         _dependencies: List[dict] = self._z_trigger.get('dependencies')
         if not _dependencies:
             return None
