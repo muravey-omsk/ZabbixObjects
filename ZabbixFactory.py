@@ -179,7 +179,7 @@ class ZabbixTriggerFactory(ZabbixFactory):
             z_host = self._zapi.trigger.get(
                 output='hosts',
                 triggerids=triggerid,
-                selectHosts=['extend'],
+                selectHosts='extend',
             )[0]
             return ZabbixHost(self._zapi, z_host)
         except IndexError as e:
