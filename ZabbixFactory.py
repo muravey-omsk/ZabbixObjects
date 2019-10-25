@@ -180,7 +180,7 @@ class ZabbixTriggerFactory(ZabbixFactory):
                 output='hosts',
                 triggerids=triggerid,
                 selectHosts='extend',
-            )[0]
+            )[0]['hosts'][0]
             return ZabbixHost(self._zapi, z_host)
         except IndexError as e:
             log.warning("Ошибка получения узла по Zabbix триггеру: " + str(e.args))
