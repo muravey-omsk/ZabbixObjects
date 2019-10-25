@@ -786,6 +786,21 @@ class ZabbixEvent(Zabbix):
 class ZabbixProblem(ZabbixEvent):
     """Класс для работы с пролемами Zabbix"""
 
+    def _get(self, **options):
+        """Получение всех данных события из ZabbixAPI"""
+        try:
+            problem_get = dict(
+                output='extend',
+                eventids=self._z_event['eventid'],
+            )
+            problem_get.update(options)
+            z_event = self._zapi.problem.get(**problem_get)[0]
+            self._z_event.update(z_event)
+        except IndexError as e:
+            log.error("Ошибка получения данных Zabbix события: " + str(e.args))
+        except ZabbixAPIException as e:
+            log.error("Ошибка получения данных Zabbix события: " + str(e.data))
+
     @classmethod
     def get_by_id(cls, zapi: ZabbixAPI, problemid: int):
         """Создание объекта ZabbixEvent из ZabbixAPI"""
