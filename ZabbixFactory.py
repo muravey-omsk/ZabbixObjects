@@ -269,14 +269,14 @@ class ZabbixProblemFactory(ZabbixEventFactory):
         """Создание объекта ZabbixProblem из ZabbixAPI"""
         return ZabbixProblem.get_by_id(self._zapi, eventid)
 
-    def get_by_groupids(self, groupids: list, limit: int = 500):
+    def get_by_groupids(self, groupids: List[int], limit: int = 500):
         """Генератор событий из групп groupids по ZabbixAPI"""
         if groupids is None:
-            groupids = [10]  # Группа по-умолчанию - A4
+            groupids = [{'groupid': 10}]  # Группа по-умолчанию - A4
         time_from = int(time.time()) - (3600 * 1)  # За последний час
-        z_events: list = self._zapi.problem.get(
+        problem_get = dict(
             output='extend',
-            groupids=groupids,
+            groupids={'groupid': groupid for groupid in groupids},
             acknowledged='false',
             suppressed='false',
             time_from=time_from,
@@ -284,6 +284,7 @@ class ZabbixProblemFactory(ZabbixEventFactory):
                 {'tag': 'autoticket'},
             ],
         )
+        z_events: list = self._zapi.problem.get(problem_get)
         if len(z_events) >= limit:
             yield
         for event in z_events:
