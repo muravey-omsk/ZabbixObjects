@@ -260,11 +260,11 @@ class ZabbixProblemFactory(ZabbixEventFactory):
     def get_by_groupids(self, groupids: List[int], limit: int = 500):
         """Генератор событий из групп groupids по ZabbixAPI"""
         if groupids is None:
-            groupids = [{'groupid': 10}]  # Группа по-умолчанию - A4
+            groupids = [10]  # Группа по-умолчанию - A4
         time_from = int(time.time()) - (3600 * 1)  # За последний час
         problem_get = dict(
             output='extend',
-            groupids={'groupid': groupid for groupid in groupids},
+            groupids=[{'groupid': groupid} for groupid in groupids],
             acknowledged='false',
             suppressed='false',
             time_from=time_from,
