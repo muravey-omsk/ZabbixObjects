@@ -527,8 +527,7 @@ class ZabbixTrigger(Zabbix):
 
     def is_trigger_A4(self):
         """Триггер по недоступности A4?"""
-        return re.match(r'^A4-[0-9]{5}-', str(self._host)) and re.search(r'Коммутатор недоступен',
-                                                                         self.description)
+        return re.match(r'^A4-[0-9]{5}-', str(self._host)) and re.search(r'Коммутатор недоступен', self.description)
 
     def is_trigger_E4(self):
         """Триггер по недоступности E4?"""
@@ -744,6 +743,7 @@ class ZabbixEvent(Zabbix):
             log.warning("Ошибка получения Zabbix события: %s", e.args)
         except ZabbixAPIException as e:
             log.error("Ошибка получения Zabbix события: %s", e.data)
+        return None
 
     @property
     def eventid(self) -> int:
@@ -810,12 +810,12 @@ class ZabbixProblem(ZabbixEvent):
             log.error("Ошибка получения данных Zabbix события: %s", e.data)
 
     @classmethod
-    def get_by_id(cls, zapi: ZabbixAPI, problemid: int):
+    def get_by_id(cls, zapi: ZabbixAPI, eventid: int):
         """Создание объекта ZabbixEvent из ZabbixAPI"""
         try:
             event_get = dict(
                 output='extend',
-                eventids=[problemid],
+                eventids=[eventid],
             )
             z_event = zapi.problem.get(**event_get)[0]
             trigger = ZabbixTrigger.get_by_id(zapi, z_event['objectid'])
@@ -825,3 +825,4 @@ class ZabbixProblem(ZabbixEvent):
             log.warning("Ошибка получения Zabbix проблемы: %s", e.args)
         except ZabbixAPIException as e:
             log.error("Ошибка получения Zabbix проблемы: %s", e.data)
+        return None
