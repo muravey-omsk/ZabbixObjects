@@ -15,19 +15,7 @@ class ZabbixGroupFactory(ZabbixFactory):
 
     def get_by_id(self, groupid: int):
         """Создание объекта ZabbixGroup из ZabbixAPI"""
-        try:
-            hostgroup_get = dict(
-                output='extend',
-                groupids=[groupid],
-            )
-            z_group = self._zapi.hostgroup.get(**hostgroup_get)[0]
-            return ZabbixGroup(self._zapi, z_group)
-        except IndexError as e:
-            log.warning("Ошибка получения группы Zabbix: " + str(e.args))
-        except KeyError as e:
-            log.error("Ошибка получения группы Zabbix без groupids: " + str(e.args))
-        except ZabbixAPIException as e:
-            log.error("Ошибка получения Zabbix группы: " + str(e.data))
+        return ZabbixGroup.get_by_id(self._zapi, groupid)
 
     def get_by_filter(self, _filter: dict):
         """Получение списка объектов ZabbixGroup из ZabbixAPI по фильтру"""
