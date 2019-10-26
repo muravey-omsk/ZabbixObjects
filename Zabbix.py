@@ -22,6 +22,10 @@ class Zabbix:
         """
         self._zapi = zapi
 
+    @property
+    def zapi(self):
+        return self._zapi
+
 
 class ZabbixGroup(Zabbix):
     """Класс для работы с группами узлов Zabbix"""
@@ -575,7 +579,7 @@ class ZabbixTrigger(Zabbix):
         """
         if not trigger.get('triggerid'):
             raise KeyError
-        super().__init__(host._zapi)
+        super().__init__(host.zapi)
         self._z_trigger = trigger
         self._host = host
 
@@ -702,7 +706,7 @@ class ZabbixEvent(Zabbix):
         """
         if not event.get('eventid'):
             raise KeyError
-        super().__init__(trigger._zapi)
+        super().__init__(trigger.zapi)
         self._trigger = trigger
         self._z_event = event
 
