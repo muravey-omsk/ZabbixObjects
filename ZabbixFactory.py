@@ -274,6 +274,6 @@ class ZabbixProblemFactory(ZabbixEventFactory):
         )
         z_events: list = self._zapi.problem.get(problem_get)
         if len(z_events) >= limit:
-            yield
+            return None
         for event in z_events:
             yield self.make(event)
