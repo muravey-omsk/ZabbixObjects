@@ -27,6 +27,80 @@ class Zabbix:
         return self._zapi
 
 
+class ZabbixConfiguration(Zabbix):
+
+    def do_export(self, _options: list, _format='json'):
+        """
+        https://www.zabbix.com/documentation/4.2/ru/manual/api/reference/configuration/export
+
+        Объект `options` имеет следующие параметры::
+            `groups` - (массив) ID экспортируемых групп узлов сети;
+            `hosts` - (массив) ID экспортируемых узлов сети;
+            `images` - (массив) ID экспортируемых изображений;
+            `maps` - (массив) ID экспортируемых карт сетей;
+            `screens` - (массив) ID экспортируемых комплексных экранов;
+            `templates` - (массив) ID экспортируемых шаблонов;
+            `valueMaps` - (массив) ID экспортируемых преобразований значений.
+        "params": {
+            "options": {
+                "hosts": [ "10161" ]
+            },
+            "format": "xml"
+        }
+
+        :param _options: Экспортируемые объекты
+        :param _format: Формат, в котором необходимо экспортировать данные.
+            Возможные значения: json, xml.
+        """
+        configuration_export = dict(
+            options=_options,
+            format=_format,
+        )
+        result = self._zapi.configuration.export(**configuration_export)
+        return result
+
+    def do_import(self, _source: str, _rules: dict, _format='json'):
+        """
+
+        https://www.zabbix.com/documentation/4.2/ru/manual/api/reference/configuration/import
+
+        "params": {
+            "format": "json",
+            "rules": {
+                "applications": {
+                    "createMissing": true,
+                    "deleteMissing": false
+                },
+                "valueMaps": {
+                    "createMissing": true,
+                    "updateExisting": false
+                },
+                "hosts": {
+                    "createMissing": true,
+                    "updateExisting": true
+                },
+                "items": {
+                    "createMissing": true,
+                    "updateExisting": true,
+                    "deleteMissing": true
+                }
+            },
+        }
+
+        :param _source: Сериализованная строка, которая содержит данные конфигурации.
+        :param _rules: Правила, каким образом необходимо импортировать новые и существующие объекты.
+        :param _format: Формат сериализованной строки: json, xml.
+
+        """
+        configuration_import = dict(
+            source=_source,
+            rules=_rules,
+            format=_format,
+        )
+        result = self._zapi.do_request('configuration.import', str(configuration_import))
+        return result
+
+
 class ZabbixGroup(Zabbix):
     """Класс для работы с группами узлов Zabbix"""
 
