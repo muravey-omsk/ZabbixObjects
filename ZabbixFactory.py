@@ -264,7 +264,7 @@ class ZabbixProblemFactory(ZabbixEventFactory):
         time_from = int(time.time()) - (3600 * 1)  # За последний час
         problem_get = dict(
             output='extend',
-            groupids=[{'groupid': groupid} for groupid in groupids],
+            groupids=groupids,
             acknowledged='false',
             suppressed='false',
             time_from=time_from,
