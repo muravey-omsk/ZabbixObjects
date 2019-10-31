@@ -243,7 +243,7 @@ class ZabbixEventFactory(ZabbixFactory):
             ]
         )
         if len(z_events) >= limit:
-            yield
+            return None
         for event in z_events:
             yield self.make(event)
 
