@@ -266,7 +266,6 @@ class ZabbixProblemFactory(ZabbixEventFactory):
             output='extend',
             groupids=groupids,
             acknowledged='false',
-            suppressed='false',
             time_from=time_from,
             tags=[
                 {'tag': 'autoticket'},
