@@ -265,14 +265,14 @@ class ZabbixProblemFactory(ZabbixEventFactory):
         problem_get = dict(
             output='extend',
             groupids=groupids,
-            acknowledged='false',
-            suppressed='false',
+            acknowledged=False,
+            suppressed=False,
             time_from=time_from,
             tags=[
                 {'tag': 'autoticket'},
             ],
         )
-        z_events: list = self._zapi.problem.get(problem_get)
+        z_events: list = self._zapi.problem.get(**problem_get)
         if len(z_events) >= limit:
             return None
         for event in z_events:
