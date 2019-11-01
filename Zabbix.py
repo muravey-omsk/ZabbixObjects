@@ -120,6 +120,9 @@ class ZabbixGroup(Zabbix):
         super().__init__(zapi)
         self._z_group = group
 
+    def __str__(self) -> str:
+        return self._z_group.get('name')
+
     @classmethod
     def get_by_id(cls, zapi: ZabbixAPI, groupid: int):
         """Создание объекта ZabbixGroup из ZabbixAPI"""
@@ -244,6 +247,9 @@ class ZabbixTemplate(Zabbix):
             raise KeyError
         super().__init__(zapi)
         self._z_template = template
+
+    def __str__(self) -> str:
+        return self.name
 
     def _get(self):
         """Получение всех данных шаблона"""
@@ -659,6 +665,9 @@ class ZabbixTrigger(Zabbix):
         super().__init__(host.zapi)
         self._z_trigger = trigger
         self._host = host
+
+    def __str__(self) -> str:
+        return self.description
 
     def _get(self, **kwargs):
         """Получение всех данных триггера из ZabbixAPI"""
