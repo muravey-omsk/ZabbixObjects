@@ -261,7 +261,7 @@ class ZabbixProblemFactory(ZabbixEventFactory):
         """Генератор событий из групп groupids по ZabbixAPI"""
         if groupids is None:
             groupids = [10]  # Группа по-умолчанию - A4
-        time_from = int(time.time()) - (3600 * 1)  # За последний час
+        time_from = int(time.time()) - (86400 * 3)  # За три последних дня
         problem_get = dict(
             output='extend',
             groupids=groupids,
