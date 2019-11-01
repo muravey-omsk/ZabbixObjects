@@ -860,6 +860,7 @@ class ZabbixEvent(Zabbix):
         :param str message: Текст сообщения
         :param int action: Сумма действий (например 7=1+2+4)
         """
+        log.debug("%s: Подтверждение события в Zabbix")
         event_ack = dict(
             eventids=self._z_event['eventid'],
             action=action,  # 2 - подтвердить событие, 4 - добавить сообщение
