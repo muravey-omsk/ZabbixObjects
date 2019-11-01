@@ -603,6 +603,10 @@ class ZabbixTrigger(Zabbix):
         """Триггер по недоступности A4?"""
         return re.match(r'^A4-[0-9]{5}-', str(self._host)) and re.search(r'Коммутатор недоступен', self.description)
 
+    def is_trigger_D4(self):
+        """Триггер по недоступности D4?"""
+        return re.match(r'^D4-', str(self._host))
+
     def is_trigger_E4(self):
         """Триггер по недоступности E4?"""
         return re.match(r'^E4-', str(self._host))
