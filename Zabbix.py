@@ -776,7 +776,7 @@ class ZabbixTrigger(Zabbix):
         """Получение последних сообщений подтверждённых событий по триггеру из Zabbix API"""
         z_events = self._get_last_events(acknowledged='True', value=1)
         # Получаем список ключей тикетов
-        return (e.get('message') for e in z_events)
+        return (e.get('message') for e in z_events if e.get('message'))
 
 
 class ZabbixEvent(Zabbix):
