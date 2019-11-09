@@ -599,7 +599,7 @@ class ZabbixHost(Zabbix):
 
     def delete(self):
         """УДАЛЕНИЕ Zabbix узла"""
-        self._zapi.host.delete([self.hostid])
+        self._zapi.host.delete(self.hostid)
 
 
 class ZabbixTrigger(Zabbix):
