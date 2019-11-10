@@ -858,7 +858,7 @@ class ZabbixEvent(Zabbix):
             self._get()
         return str(self._z_event.get('name'))
 
-    def ack(self, message, action=6):
+    def ack(self, message, action=6) -> bool:
         """Подтверждаем в Zabbix
 
         Возможные значения *action*:
@@ -877,6 +877,7 @@ class ZabbixEvent(Zabbix):
         )
         self._zapi.event.acknowledge(**event_ack)
         self._z_event['acknowledged'] = 1
+        return True
 
 
 class ZabbixProblem(ZabbixEvent):
