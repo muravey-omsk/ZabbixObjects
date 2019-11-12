@@ -653,6 +653,10 @@ class ZabbixTrigger(Zabbix):
         """Триггер по разрывам STP?"""
         return re.search(r'Разрыв STP кольца', self.description)
 
+    def is_trigger_mass_cut(self):
+        """Триггер по массовым порезам?"""
+        return re.search(r'Массовый порез', self.description)
+
     def __init__(self, host: ZabbixHost, trigger: dict):
         """
 
