@@ -630,6 +630,9 @@ class ZabbixHost(Zabbix):
             self._groups = [ZabbixGroup(self._zapi, group) for group in self._z_host.get('groups')]
         return self._groups
 
+    def get_group(self, name):
+        return next(filter(lambda g: g.name == name, self.groups))
+
 
 class ZabbixTrigger(Zabbix):
     """Класс для работы с узлами Zabbix"""
