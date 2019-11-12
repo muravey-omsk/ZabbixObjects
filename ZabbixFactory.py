@@ -44,13 +44,13 @@ class ZabbixMacroFactory(ZabbixFactory):
     def make(self, macro: dict):
         return ZabbixMacro(self._zapi, macro)
 
-    def get_by_filter(self, _filter: dict, **kwargs):
+    def get_by_filter(self, _filter: dict, **options):
         """Получение макроса из ZabbixAPI по фильтру"""
         usermacro_get = dict(
             output='extend',
             filter=_filter,
         )
-        usermacro_get.update(kwargs)
+        usermacro_get.update(options)
         z_macros = self._zapi.usermacro.get(**usermacro_get)
         return (self.make(m) for m in z_macros)
 
@@ -223,7 +223,7 @@ class ZabbixEventFactory(ZabbixFactory):
         """Создание объекта ZabbixEvent из ZabbixAPI"""
         return ZabbixEvent.get_by_id(self._zapi, eventid)
 
-    def get_by_groupids(self, groupids: list, limit: int = 500):
+    def get_by_groupids(self, groupids: list, limit: int = 500, **options):
         """Генератор событий из групп groupids по ZabbixAPI"""
         if groupids is None:
             groupids = [10]  # Группа по-умолчанию - A4
@@ -238,9 +238,6 @@ class ZabbixEventFactory(ZabbixFactory):
             selectHosts=['hostid', 'host', 'name'],
             selectRelatedObject=['triggerid', 'description', 'value'],
             filter={'r_eventid': 0},  # только события без восстановления
-            tags=[
-                {'tag': 'autoticket'},
-            ]
         )
         if len(z_events) >= limit:
             return
@@ -256,7 +253,7 @@ class ZabbixProblemFactory(ZabbixEventFactory):
         """Создание объекта ZabbixProblem из ZabbixAPI"""
         return ZabbixProblem.get_by_id(self._zapi, eventid)
 
-    def get_by_groupids(self, groupids: List[int], limit: int = 500):
+    def get_by_groupids(self, groupids: List[int], limit: int = 500, **option):
         """Генератор событий из групп groupids по ZabbixAPI"""
         if groupids is None:
             groupids = [10]  # Группа по-умолчанию - A4
@@ -267,10 +264,8 @@ class ZabbixProblemFactory(ZabbixEventFactory):
             acknowledged=False,
             suppressed=False,
             time_from=time_from,
-            tags=[
-                {'tag': 'autoticket'},
-            ],
         )
+        problem_get.update(option)
         z_events: list = self._zapi.problem.get(**problem_get)
         if len(z_events) >= limit:
             return
