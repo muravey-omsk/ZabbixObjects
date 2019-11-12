@@ -868,7 +868,7 @@ class ZabbixEvent(Zabbix):
             self._get(selectTags='extend')
         return self._z_event.get('tags')
 
-    def tag_by_name(self, name: str) -> str:
+    def get_tag(self, name: str) -> str:
         return next(filter(lambda t: t.get('tag') == name, self.tags)).get('value')
 
     def ack(self, message, action=6) -> bool:
