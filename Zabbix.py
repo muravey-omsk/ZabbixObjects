@@ -472,6 +472,7 @@ class ZabbixHost(Zabbix):
         self._macros = list()  # список ZabbixMacro
         self._interfaces = list()  # список ZabbixInterface
         self._vip = None
+        self._groups = None
 
     def __str__(self) -> str:
         return self.host
@@ -600,6 +601,14 @@ class ZabbixHost(Zabbix):
     def delete(self):
         """УДАЛЕНИЕ Zabbix узла"""
         self._zapi.host.delete(self.hostid)
+
+    @property
+    def groups(self):
+        if not self._groups:
+            if not self._z_host.get('groups'):
+                self._get(output='macros', selectMacros='extend')
+            self._groups = [ZabbixGroup(self._zapi, group) for group in self._z_host.get('groups')]
+        return self._groups
 
 
 class ZabbixTrigger(Zabbix):
