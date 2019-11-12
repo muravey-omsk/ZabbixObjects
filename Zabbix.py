@@ -799,14 +799,14 @@ class ZabbixEvent(Zabbix):
     def __str__(self) -> str:
         return self.name
 
-    def _get(self, **kwargs):
+    def _get(self, **options):
         """Получение всех данных события из ZabbixAPI"""
         try:
             event_get = dict(
                 output='extend',
                 eventids=self._z_event['eventid'],
             )
-            event_get.update(kwargs)
+            event_get.update(options)
             z_event = self._zapi.event.get(**event_get)[0]
             self._z_event.update(z_event)
         except IndexError as e:
