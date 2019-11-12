@@ -108,6 +108,12 @@ class ZabbixGroup(Zabbix):
     def groupid(self):
         return int(self._z_group['groupid'])
 
+    @property
+    def name(self):
+        if not self._z_group.get('name'):
+            self._get()
+        return self._z_group.get('name')
+
     def __init__(self, zapi: ZabbixAPI, group: dict):
         """
 
@@ -122,6 +128,20 @@ class ZabbixGroup(Zabbix):
 
     def __str__(self) -> str:
         return self._z_group.get('name')
+
+    def _get(self, **options):
+        try:
+            hostgroup_get = dict(
+                output='extend',
+                groupids=self._z_group['groupid'],
+            )
+            hostgroup_get.update(options)
+            z_group = self._zapi.hostgroup.get(**hostgroup_get)[0]
+            self._z_group.update(z_group)
+        except IndexError as e:
+            log.error("Ошибка получения данных группы Zabbix: %s", e.args)
+        except ZabbixAPIException as e:
+            log.error("Ошибка получения данных Zabbix группы: %s", e.data)
 
     @classmethod
     def get_by_id(cls, zapi: ZabbixAPI, groupid: int):
