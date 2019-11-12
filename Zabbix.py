@@ -858,6 +858,12 @@ class ZabbixEvent(Zabbix):
             self._get()
         return str(self._z_event.get('name'))
 
+    @property
+    def tags(self) -> List[dict]:
+        if not self._z_event.get('tags'):
+            self._get(selectTags='extend')
+        return self._z_event.get('tags')
+
     def ack(self, message, action=6) -> bool:
         """Подтверждаем в Zabbix
 
