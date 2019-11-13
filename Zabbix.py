@@ -608,15 +608,18 @@ class ZabbixHost(Zabbix):
         :param value: Значение макросв
         :return:
         """
-        zabbix_macro = self.get_macro(macro)
-        if zabbix_macro:
-            if str(zabbix_macro.value) != str(value):
-                log.info("%12s: Меняю макрос %s с '%s' на '%s'", self, macro, zabbix_macro.value, value)
-                zabbix_macro.value = value
-        else:
-            log.info("%12s: Устанавливаю макрос '%s' в '%s'", self, macro, value)
-            zabbix_macro = ZabbixMacro.new(self._zapi, self.hostid, macro, value)
-        return zabbix_macro
+        try:
+            zabbix_macro = self.get_macro(macro)
+            if zabbix_macro:
+                if str(zabbix_macro.value) != str(value):
+                    log.info("%12s: Меняю макрос %s с '%s' на '%s'", self, macro, zabbix_macro.value, value)
+                    zabbix_macro.value = value
+            else:
+                log.info("%12s: Устанавливаю макрос '%s' в '%s'", self, macro, value)
+                zabbix_macro = ZabbixMacro.new(self._zapi, self.hostid, macro, value)
+            return zabbix_macro
+        except ZabbixAPIException as e:
+            log.error("%12s: Ошибка установки макроса: %s", self, e.data)
 
     def delete(self):
         """УДАЛЕНИЕ Zabbix узла"""
