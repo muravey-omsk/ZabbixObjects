@@ -458,8 +458,11 @@ class ZabbixHost(Zabbix):
 
     @host.setter
     def host(self, value: str):
-        self._update(host=value)
-        self._z_host['host'] = value
+        try:
+            self._update(host=value)
+            self._z_host['host'] = value
+        except ZabbixAPIException as e:
+            log.error("%s: Ошибка переименовывания: %s", self, e.data)
 
     @property
     def name(self) -> str:
@@ -469,8 +472,11 @@ class ZabbixHost(Zabbix):
 
     @name.setter
     def name(self, value: str):
-        self._update(name=value)
-        self._z_host['name'] = value
+        try:
+            self._update(name=value)
+            self._z_host['name'] = value
+        except ZabbixAPIException as e:
+            log.error("%s: Ошибка смены имени: %s", self, e.data)
 
     @property
     def is_vip(self) -> str:
@@ -533,8 +539,11 @@ class ZabbixHost(Zabbix):
 
     @status.setter
     def status(self, value: int):
-        self._update(status=value)
-        self._z_host['status'] = value
+        try:
+            self._update(status=value)
+            self._z_host['status'] = value
+        except ZabbixAPIException as e:
+            log.error("%s: Ошибка смены статуса: %s", self, e.data)
 
     def is_monitored(self) -> bool:
         return self.status == 0
@@ -561,8 +570,11 @@ class ZabbixHost(Zabbix):
 
     def link_template(self, template: ZabbixTemplate):
         """Привязывает новый шаблон и удаляет все остальные с этого узла"""
-        self._update(templates=template.templateid)
-        self._get(output='parentTemplates', selectParentTemplates='extend')
+        try:
+            self._update(templates=template.templateid)
+            self._get(output='parentTemplates', selectParentTemplates='extend')
+        except ZabbixAPIException as e:
+            log.error("%s: Ошибка привязки шаблона: %s", self, e.data)
 
     def find_parent_templates(self, template_name: str):
         """Поиск шаблонов, начинающихся на указанный текст"""
@@ -599,7 +611,7 @@ class ZabbixHost(Zabbix):
             self._z_host['inventory'].update(value)
             self._update(inventory=self._z_host.get('inventory'))
         except ZabbixAPIException as e:
-            log.error("Ошибка обновления инвентарных данных: %s", e.data)
+            log.error("%12s: Ошибка обновления инвентарных данных: %s", self, e.data)
 
     def update_or_create_macro(self, macro: str, value: str):
         """Обновить или создать новый макрос
