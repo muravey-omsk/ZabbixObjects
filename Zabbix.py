@@ -8,6 +8,20 @@ from pyzabbix import ZabbixAPI, ZabbixAPIException
 log = logging.getLogger(__name__)
 
 
+def zapi_exception(log_message: str):
+    def decorator(func):
+
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except ZabbixAPIException as e:
+                log.error("%s: %s", log_message, e.data)
+
+        return wrapper
+
+    return decorator
+
+
 class Zabbix:
     """Общий класс для хранения ссылки на ZabbixAPI
 
