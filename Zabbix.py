@@ -44,7 +44,7 @@ class Zabbix:
 
 class ZabbixConfiguration(Zabbix):
 
-    def do_export(self, _options: list, _format='json'):
+    def do_export(self, _options: dict, _format='json'):
         """
         https://www.zabbix.com/documentation/4.2/ru/manual/api/reference/configuration/export
 
