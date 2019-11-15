@@ -81,6 +81,10 @@ class ZabbixTemplateFactory(ZabbixFactory):
         """Получение шаблона из ZabbixAPI по имени"""
         return self.get_by_filter({'host': template_name})
 
+    def get_by_group(self, group: ZabbixGroup):
+        """Получение списка узлов ZabbixHost из ZabbixAPI по видимому имени"""
+        return self.get_by_filter({}, groupids=group.groupid)
+
 
 class ZabbixInterfaceFactory(ZabbixFactory):
 
