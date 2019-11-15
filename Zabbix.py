@@ -44,6 +44,7 @@ class Zabbix:
 
 class ZabbixConfiguration(Zabbix):
 
+    @zapi_exception("Ошибка экпорта")
     def do_export(self, _options: dict, _format='json'):
         """
         https://www.zabbix.com/documentation/4.2/ru/manual/api/reference/configuration/export
@@ -74,6 +75,7 @@ class ZabbixConfiguration(Zabbix):
         result = self._zapi.configuration.export(**configuration_export)
         return result
 
+    @zapi_exception("Ошибка импорта")
     def do_import(self, _source: str, _rules: dict, _format='json'):
         """
 
@@ -112,7 +114,8 @@ class ZabbixConfiguration(Zabbix):
             rules=_rules,
             format=_format,
         )
-        result = self._zapi.do_request('configuration.import', str(configuration_import))
+        # noinspection PyTypeChecker
+        result = self._zapi.do_request('configuration.import', configuration_import)
         return result
 
 
