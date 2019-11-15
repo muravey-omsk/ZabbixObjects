@@ -68,12 +68,13 @@ class ZabbixTemplateFactory(ZabbixFactory):
         return ZabbixTemplate(self._zapi, template)
 
     @zapi_exception("Ошибка получения Zabbix шаблона")
-    def get_by_filter(self, _filter: dict):
+    def get_by_filter(self, _filter: dict, **options):
         """Получение шаблона из ZabbixAPI по фильтру"""
         template_get = dict(
             output='extend',
             filter=_filter,
         )
+        template_get.update(options)
         z_templates = self._zapi.template.get(**template_get)
         return (self.make(t) for t in z_templates)
 
