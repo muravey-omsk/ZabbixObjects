@@ -444,22 +444,22 @@ class ZabbixHost(Zabbix):
     """Класс для работы с узлами Zabbix"""
 
     @zapi_exception("Ошибка получения данных Zabbix узла")
-    def _get(self, **kwargs):
+    def _get(self, **options):
         """Получение всех данных узла из ZabbixAPI"""
         host_get = dict(
             output='extend',
             hostids=self._z_host['hostid'],
         )
-        host_get.update(kwargs)
+        host_get.update(options)
         z_host = self._zapi.host.get(**host_get)[0]
         self._z_host.update(z_host)
 
-    def _update(self, **kwargs):
+    def _update(self, **options):
         """Обновление данных узла в ZabbixAPI"""
         host_update = dict(
             hostid=self._z_host['hostid'],
         )
-        host_update.update(kwargs)
+        host_update.update(options)
         self._zapi.host.update(**host_update)
 
     @property
@@ -649,6 +649,19 @@ class ZabbixHost(Zabbix):
 
     def get_group(self, name):
         return next(filter(lambda g: g.name == name, self.groups))
+
+    @property
+    def proxy_hostid(self):
+        if not self._z_host.get('proxy_hostid'):
+            self._get()
+        return self._z_host.get('proxy_hostid')
+
+    @proxy_hostid.setter
+    @zapi_exception("Ошибка переноса на прокси")
+    def proxy_hostid(self, value: int):
+        log.info("%12s: Переношу на прокси: %s", self, str(value))
+        self._update(proxy_hostid=value)
+        self._z_host['proxy_hostid'] = value
 
 
 class ZabbixTrigger(Zabbix):
