@@ -651,7 +651,7 @@ class ZabbixHost(Zabbix):
         return next(filter(lambda g: g.name == name, self.groups))
 
     @property
-    def proxy_hostid(self):
+    def proxy_hostid(self) -> int:
         if not self._z_host.get('proxy_hostid'):
             self._get()
         return self._z_host.get('proxy_hostid')
