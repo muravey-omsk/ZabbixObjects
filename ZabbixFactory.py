@@ -9,7 +9,7 @@ class ZabbixFactory(Zabbix, ABC):
 
 
 class ZabbixProxyFactory(ZabbixFactory):
-    def make(self, proxy):
+    def make(self, proxy: dict):
         return ZabbixProxy(self._zapi, proxy)
 
     def get_by_host(self, _name: Union[str, List[str]]):
