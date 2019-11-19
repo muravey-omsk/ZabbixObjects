@@ -8,6 +8,26 @@ class ZabbixFactory(Zabbix, ABC):
     pass
 
 
+class ZabbixProxyFactory(ZabbixFactory):
+    def make(self, proxy):
+        return ZabbixProxy(self._zapi, proxy)
+
+    def get_by_name(self, _name: Union[str, List[str]]):
+        """Получение списка объекторв ZabbixProxy из ZabbixAPI по имени"""
+        return self.get_by_filter({'name': _name})
+
+    @zapi_exception("Ошибка получения Zabbix прокси")
+    def get_by_filter(self, _filter: dict, **options):
+        """Получение списка объектов ZabbixGroup из ZabbixAPI по фильтру"""
+        proxy_get = dict(
+            output='extend',
+            filter=_filter,
+        )
+        proxy_get.update(options)
+        z_proxies: list = self._zapi.proxy.get(**proxy_get)
+        return (self.make(proxy) for proxy in z_proxies)
+
+
 class ZabbixGroupFactory(ZabbixFactory):
 
     def make(self, group: dict):
