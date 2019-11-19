@@ -12,9 +12,9 @@ class ZabbixProxyFactory(ZabbixFactory):
     def make(self, proxy):
         return ZabbixProxy(self._zapi, proxy)
 
-    def get_by_name(self, _name: Union[str, List[str]]):
+    def get_by_host(self, _name: Union[str, List[str]]):
         """Получение списка объекторв ZabbixProxy из ZabbixAPI по имени"""
-        return self.get_by_filter({'name': _name})
+        return self.get_by_filter({'host': _name})
 
     @zapi_exception("Ошибка получения Zabbix прокси")
     def get_by_filter(self, _filter: dict, **options):
