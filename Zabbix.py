@@ -10,6 +10,7 @@ log = logging.getLogger(__name__)
 
 def zapi_exception(log_message: str):
     """Создание декоратора с заданным сообщение в лог"""
+
     def decorator(func):
 
         def wrapper(*args, **kwargs):
@@ -24,11 +25,7 @@ def zapi_exception(log_message: str):
 
 
 class Zabbix:
-    """Общий класс для хранения ссылки на ZabbixAPI
-
-    ВНИМАНИЕ!!!
-    Возможно выбрасывание исключений ZabbixAPIException
-    Требуется обработка прерываний"""
+    """Общий класс для хранения ссылки на ZabbixAPI"""
 
     def __init__(self, zapi: ZabbixAPI):
         """
@@ -117,6 +114,41 @@ class ZabbixConfiguration(Zabbix):
         # noinspection PyTypeChecker
         result = self._zapi.do_request('configuration.import', configuration_import)
         return result
+
+
+class ZabbixProxy(Zabbix):
+
+    def __init__(self, zapi: ZabbixAPI, proxy: dict):
+        if not proxy.get('proxyid'):
+            raise KeyError
+        super().__init__(zapi)
+        self._z_proxy = proxy
+
+    @zapi_exception("Ошибка получения данных Zabbix прокси")
+    def _get(self, **options):
+        proxy_get = dict(
+            output='extend',
+            proxyids=self._z_proxy['proxyid'],
+        )
+        proxy_get.update(options)
+        z_proxy = self._zapi.proxy.get(proxy_get)[0]
+        self._z_proxy.update(z_proxy)
+
+    @property
+    def proxyid(self):
+        return self._z_proxy.get('proxyid')
+
+    @property
+    def host(self):
+        if not self._z_proxy.get('host'):
+            self._get()
+        return self._z_proxy.get('host')
+
+    @property
+    def status(self):
+        if not self._z_proxy.get('status'):
+            self._get()
+        return self._z_proxy.get('status')
 
 
 class ZabbixGroup(Zabbix):
