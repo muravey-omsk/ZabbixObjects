@@ -121,8 +121,6 @@ class ZabbixProxy(Zabbix):
     def __init__(self, zapi: ZabbixAPI, proxy: dict):
         if not proxy.get('proxyid'):
             raise KeyError
-        if not isinstance(proxy['proxyid'], int):
-            raise TypeError
         super().__init__(zapi)
         self._z_proxy = proxy
 
