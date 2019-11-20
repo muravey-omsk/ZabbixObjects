@@ -121,6 +121,8 @@ class ZabbixProxy(Zabbix):
     def __init__(self, zapi: ZabbixAPI, proxy: dict):
         if not proxy.get('proxyid'):
             raise KeyError
+        if not isinstance(proxy['proxyid'], int):
+            raise TypeError
         super().__init__(zapi)
         self._z_proxy = proxy
 
@@ -139,16 +141,16 @@ class ZabbixProxy(Zabbix):
         return self._z_proxy.get('proxyid')
 
     @property
-    def host(self):
+    def host(self) -> str:
         if not self._z_proxy.get('host'):
             self._get()
         return self._z_proxy.get('host')
 
     @property
-    def status(self):
+    def status(self) -> int:
         if not self._z_proxy.get('status'):
             self._get()
-        return self._z_proxy.get('status')
+        return int(self._z_proxy.get('status'))
 
 
 class ZabbixGroup(Zabbix):

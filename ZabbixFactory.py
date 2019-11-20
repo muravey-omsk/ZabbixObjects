@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Union
+from typing import Union, Generator
 
 from .Zabbix import *
 
@@ -17,7 +17,7 @@ class ZabbixProxyFactory(ZabbixFactory):
         return self.get_by_filter({'host': _name})
 
     @zapi_exception("Ошибка получения Zabbix прокси")
-    def get_by_filter(self, _filter: dict, **options):
+    def get_by_filter(self, _filter: dict, **options) -> Generator[ZabbixProxy, None, None]:
         """Получение списка объектов ZabbixGroup из ZabbixAPI по фильтру"""
         proxy_get = dict(
             output='extend',
