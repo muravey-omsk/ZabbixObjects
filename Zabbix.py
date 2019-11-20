@@ -272,7 +272,7 @@ class ZabbixMacro(Zabbix):
 
     @classmethod
     @zapi_exception("Ошибка создания Zabbix макроса")
-    def new(cls, zapi: ZabbixAPI, hostid: int, macro: str, value: str):
+    def create(cls, zapi: ZabbixAPI, hostid: int, macro: str, value: str):
         """Создание нового макроса в ZabbixAPI"""
         usermacro_create = dict(
             hostid=hostid,
@@ -632,7 +632,7 @@ class ZabbixHost(Zabbix):
                 zabbix_macro.value = value
         else:
             log.info("%12s: Устанавливаю макрос '%s' в '%s'", self, macro, value)
-            zabbix_macro = ZabbixMacro.new(self._zapi, self.hostid, macro, value)
+            zabbix_macro = ZabbixMacro.create(self._zapi, self.hostid, macro, value)
         return zabbix_macro
 
     def delete(self):

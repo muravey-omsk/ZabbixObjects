@@ -52,7 +52,7 @@ class ZabbixGroupFactory(ZabbixFactory):
         return self.get_by_filter({'name': _name})
 
     @zapi_exception("Ошибка создания Zabbix группы")
-    def new(self, groupname: str):
+    def create(self, groupname: str):
         """Создание нового узлв в ZabbixAPI"""
         z_groups = self._zapi.hostgroup.create(name=groupname)
         return self.make({'groupid': z_groups.get('groupids')[0]})
@@ -77,9 +77,9 @@ class ZabbixMacroFactory(ZabbixFactory):
     def get_by_macro(self, name: str, value: str):
         return self.get_by_filter({'macro': name}, search={'value': value}, searchWildcardsEnabled=True)
 
-    def new(self, hostid: int, macro: str, value: str = ''):
+    def create(self, hostid: int, macro: str, value: str = ''):
         """Создание нового макроса в ZabbixAPI"""
-        return ZabbixMacro.new(self._zapi, hostid, macro, value)
+        return ZabbixMacro.create(self._zapi, hostid, macro, value)
 
 
 class ZabbixTemplateFactory(ZabbixFactory):
@@ -165,7 +165,7 @@ class ZabbixHostFactory(ZabbixFactory):
         return (self.make(host) for host in z_hosts)
 
     @zapi_exception("Ошибка создания Zabbix узла")
-    def new(self, host: dict):
+    def create(self, host: dict):
         """Создание узла в ZabbixAPI
 
         :param host: Словарь Zabbix узла.
