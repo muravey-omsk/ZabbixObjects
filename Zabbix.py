@@ -124,6 +124,9 @@ class ZabbixProxy(Zabbix):
         super().__init__(zapi)
         self._z_proxy = proxy
 
+    def __str__(self):
+        return self.host
+
     @zapi_exception("Ошибка получения данных Zabbix прокси")
     def _get(self, **options):
         proxy_get = dict(
