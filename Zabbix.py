@@ -805,18 +805,19 @@ class ZabbixTrigger(Zabbix):
 
     def _get_last_events(self, since=None, limit=10, acknowledged=None, value=None):
         """Получение последних событий из Zabbix API по триггеру"""
-        if since is None:
-            since = int(time.time()) - (3600 * 1)
         event_get = dict(
             output=['clock', 'eventid', 'value', 'acknowledged', 'extend'],
             objectids=self._z_trigger['triggerid'],
             sortfield=['clock', 'eventid'],
             sortorder='DESC',  # сортировка от более нового к более старому
             limit=limit,
-            time_from=since,
             select_acknowledges=['acknowledgeid', 'clock', 'message'],
             filter={'acknowledges': {'message': '-'}},
         )
+        if since is not None:
+            event_get.update({
+                'time_from': since,
+            })
         if acknowledged is not None:
             event_get.update({
                 'acknowledged': acknowledged,
@@ -835,7 +836,7 @@ class ZabbixTrigger(Zabbix):
 
     def get_last_tickets_keys(self) -> Generator[str, None, None]:
         """Получение последних сообщений подтверждённых событий по триггеру из Zabbix API"""
-        z_events = self._get_last_events(acknowledged='True', value=1)
+        z_events = self._get_last_events(acknowledged='True', value=1, since=int(time.time()) - (86400 * 7))
         # Получаем список ключей тикетов
         return (e.get('message') for e in z_events if e.get('message'))
 
