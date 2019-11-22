@@ -839,9 +839,8 @@ class ZabbixTrigger(Zabbix):
         :raises IndexError
         """
         z_events = self._get_last_events(acknowledged=True, value=1, since=int(time.time()) - (86400 * 7))
-        z_acknowledges = [z_event['acknowledges'] for z_event in z_events if z_event.get('acknowledges')]
         # Получаем список ключей тикетов
-        return (ack['message'] for ack in z_acknowledges if ack.get('message'))
+        return (ack.get('message') for z_event in z_events for ack in z_event.get('acknowledges'))
 
 
 class ZabbixEvent(Zabbix):
