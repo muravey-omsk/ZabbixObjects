@@ -646,7 +646,7 @@ class ZabbixHost(Zabbix):
     def groups(self):
         if not self._groups:
             if not self._z_host.get('groups'):
-                self._get(output='macros', selectMacros='extend')
+                self._get(output='groups', selectGroups='extend')
             self._groups = [ZabbixGroup(self._zapi, group) for group in self._z_host.get('groups')]
         return self._groups
 
