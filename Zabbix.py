@@ -803,7 +803,7 @@ class ZabbixTrigger(Zabbix):
         del self._z_trigger['dependencies']
         self._zapi.trigger.deleteDependencies({'triggerid': self.triggerid})
 
-    def _get_last_events(self, since=None, limit=10, acknowledged=None, value=None):
+    def _get_last_events(self, since=None, limit=10, acknowledged=None, value=None) -> List[dict]:
         """Получение последних событий из Zabbix API по триггеру"""
         event_get = dict(
             output='extend',
@@ -839,7 +839,7 @@ class ZabbixTrigger(Zabbix):
         :raises IndexError
         """
         z_events = self._get_last_events(acknowledged=True, value=1, since=int(time.time()) - (86400 * 7))
-        z_acknowledges = z_events[0].get('acknowledges')
+        z_acknowledges = [z_event.get('acknowledges') for z_event in z_events if z_event.get('acknowledges')]
         # Получаем список ключей тикетов
         return (e.get('message') for e in z_acknowledges if e.get('message'))
 
