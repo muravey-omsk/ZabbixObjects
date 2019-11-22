@@ -834,10 +834,14 @@ class ZabbixTrigger(Zabbix):
         return (ZabbixEvent.get_by_id(self._zapi, e.get('eventid')) for e in z_events)
 
     def get_last_tickets_keys(self) -> Generator[str, None, None]:
-        """Получение последних сообщений подтверждённых событий по триггеру из Zabbix API"""
+        """Получение последних сообщений подтверждённых событий по триггеру из Zabbix API
+
+        :raises IndexError
+        """
         z_events = self._get_last_events(acknowledged=True, value=1, since=int(time.time()) - (86400 * 7))
+        z_acknowledges = z_events[0].get('acknowledges')
         # Получаем список ключей тикетов
-        return (e.get('message') for e in z_events if e.get('message'))
+        return (e.get('message') for e in z_acknowledges if e.get('message'))
 
 
 class ZabbixEvent(Zabbix):
