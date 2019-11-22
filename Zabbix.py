@@ -1,7 +1,7 @@
 import logging
 import re
 import time
-from typing import List
+from typing import List, Generator
 
 from pyzabbix import ZabbixAPI, ZabbixAPIException
 
@@ -833,7 +833,7 @@ class ZabbixTrigger(Zabbix):
         z_events = self._get_last_events()
         return (ZabbixEvent.get_by_id(self._zapi, e.get('eventid')) for e in z_events)
 
-    def get_last_tickets_keys(self):
+    def get_last_tickets_keys(self) -> Generator[str, None, None]:
         """Получение последних сообщений подтверждённых событий по триггеру из Zabbix API"""
         z_events = self._get_last_events(acknowledged='True', value=1)
         # Получаем список ключей тикетов
