@@ -866,6 +866,12 @@ class ZabbixEvent(Zabbix):
         return str(self._z_event.get('name'))
 
     @property
+    def value(self):
+        if self._z_event.get('value') is None:
+            self._get()
+        return int(self._z_event.get('value'))
+
+    @property
     def tags(self) -> List[dict]:
         if not self._z_event.get('tags'):
             self._get(selectTags='extend')
