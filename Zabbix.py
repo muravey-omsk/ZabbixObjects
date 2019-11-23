@@ -670,58 +670,6 @@ class ZabbixHost(Zabbix):
 class ZabbixTrigger(Zabbix):
     """Класс для работы с узлами Zabbix"""
 
-    def is_trigger_A4(self):
-        """Триггер по недоступности A4?"""
-        return re.match(r'^A4-[0-9]{5}-', str(self._host)) and re.search(r'Коммутатор недоступен', self.description)
-
-    def is_trigger_D4(self):
-        """Триггер по недоступности D4?"""
-        return re.match(r'^D4-', str(self._host))
-
-    def is_trigger_E4(self):
-        """Триггер по недоступности E4?"""
-        return re.match(r'^E4-', str(self._host))
-
-    def is_trigger_Enforta(self):
-        """Триггер по недоступности Enforta-A4?"""
-        return re.match(r'^En4', str(self._host.name))
-
-    def is_trigger_lorawan(self):
-        """Триггер по недоступности lorawan?"""
-        return re.match(r'^NSK-IBS-', str(self._host))
-
-    def is_trigger_battery(self):
-        """Триггер по работе от батареи A4?"""
-        return re.match(r'^A4-[0-9]{5}-', str(self._host)) and re.search(r'работает от батареи', self.description)
-
-    def is_trigger_K4(self):
-        """Триггер по недоступности A4?"""
-        return re.match(r'^K4-', self._host.name) and re.search(r'Коммутатор недоступен', self.description)
-
-    def is_trigger_A4TV(self):
-        """Триггер по недоступности K4MM?"""
-        return re.match(r'^K4MM-', str(self._host)) and re.search(r'не пингуется', self.description)
-
-    def is_trigger_A4TV_optic(self):
-        """Триггер по отсутствию оптического сигнала K4MM?"""
-        return re.match(r'^K4MM-', str(self._host)) and re.search(r'^Нет опт.сигнала', self.description)
-
-    def is_trigger_A4TV_optic_low(self):
-        """Триггер по слабому оптическому сигнала K4MM?"""
-        return re.match(r'^K4MM-', str(self._host)) and re.search(r'^Слабый опт.сигнал', self.description)
-
-    def is_trigger_magistr_error(self):
-        """Триггер по ошибкам на магистратьном порту?"""
-        return re.search(r'Растут ошибки на магистральном порту', self.description)
-
-    def is_trigger_stp(self):
-        """Триггер по разрывам STP?"""
-        return re.search(r'Разрыв STP кольца', self.description)
-
-    def is_trigger_mass_cut(self):
-        """Триггер по массовым порезам?"""
-        return re.search(r'Массовый порез', self.description)
-
     def __init__(self, host: ZabbixHost, trigger: dict):
         """
 
