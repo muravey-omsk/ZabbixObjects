@@ -755,7 +755,7 @@ class ZabbixTrigger(Zabbix):
         """Получение последних событий из Zabbix API по триггеру"""
         event_get = dict(
             output='extend',
-            objectids=self._z_trigger['triggerid'],
+            objectids=self.triggerid,
             sortfield=['clock', 'eventid'],
             sortorder='DESC',  # сортировка от более нового к более старому
             limit=limit,
@@ -784,9 +784,10 @@ class ZabbixTrigger(Zabbix):
     def get_last_tickets_keys(self) -> Generator[str, None, None]:
         """Получение последних сообщений подтверждённых событий по триггеру из Zabbix API
 
-        :raises IndexError
+        :raises IndexError:
         """
-        z_events = self._get_last_events(acknowledged=True, value=1, since=int(time.time()) - (86400 * 7))
+        since = int(time.time()) - (86400 * 7)
+        z_events = self._get_last_events(acknowledged=True, value=1, since=since)
         # Получаем список ключей тикетов
         return (ack.get('message') for z_event in z_events for ack in z_event.get('acknowledges'))
 
