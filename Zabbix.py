@@ -817,7 +817,7 @@ class ZabbixEvent(Zabbix):
         self._z_event = event
 
     def __str__(self) -> str:
-        return f"{self.name} + ({strftime(self.clock)})"
+        return f"{self.name} ({strftime(self.clock)})"
 
     @zapi_exception("Ошибка получения данных Zabbix события")
     def _get(self, **options):
