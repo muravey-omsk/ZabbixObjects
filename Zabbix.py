@@ -8,6 +8,11 @@ from pyzabbix import ZabbixAPI, ZabbixAPIException
 log = logging.getLogger(__name__)
 
 
+def strftime(seconds: int, strformat="%d/%b/%Y %H:%M"):
+    """Форматирование времени из unixtime"""
+    return time.strftime(strformat, time.localtime(int(seconds)))
+
+
 def zapi_exception(log_message: str):
     """Создание декоратора с заданным сообщение в лог"""
 
@@ -812,7 +817,7 @@ class ZabbixEvent(Zabbix):
         self._z_event = event
 
     def __str__(self) -> str:
-        return self.name
+        return f"{self.name} + ({strftime(self.clock)})"
 
     @zapi_exception("Ошибка получения данных Zabbix события")
     def _get(self, **options):
