@@ -921,6 +921,13 @@ class ZabbixProblem(ZabbixEvent):
         z_event = self._zapi.problem.get(**problem_get)[0]
         self._z_event.update(z_event)
 
+    @property
+    def r_event(self):
+        if not self._z_event.get('r_eventid'):
+            self._get()
+        event = ZabbixEvent(self.trigger, {'eventid': self._z_event.get('r_eventid')})
+        return event
+
     @classmethod
     @zapi_exception("Ошибка получения Zabbix проблемы")
     def get_by_id(cls, zapi: ZabbixAPI, eventid: int):
