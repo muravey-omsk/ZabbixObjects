@@ -910,17 +910,6 @@ class ZabbixEvent(Zabbix):
 class ZabbixProblem(ZabbixEvent):
     """Класс для работы с пролемами Zabbix"""
 
-    @zapi_exception("Ошибка получения данных Zabbix проблемы")
-    def _get(self, **options):
-        """Получение всех данных события из ZabbixAPI"""
-        problem_get = dict(
-            output='extend',
-            eventids=self._z_event['eventid'],
-        )
-        problem_get.update(options)
-        z_event = self._zapi.problem.get(**problem_get)[0]
-        self._z_event.update(z_event)
-
     @property
     def r_event(self):
         if not self._z_event.get('r_eventid'):
