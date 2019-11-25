@@ -37,7 +37,7 @@ class ZabbixGroupFactory(ZabbixFactory):
         """Создание объекта ZabbixGroup из ZabbixAPI"""
         return ZabbixGroup.get_by_id(self._zapi, groupid)
 
-    @zapi_exception("Ошибка получения Zabbix группы")
+    @zapi_exception("Ошибка получения Zabbix группы", logging.CRITICAL)
     def get_by_filter(self, _filter: dict) -> Generator[ZabbixGroup, None, None]:
         """Получение списка объектов ZabbixGroup из ZabbixAPI по фильтру"""
         hostgroup_get = dict(
