@@ -13,7 +13,7 @@ def strftime(seconds: int, strformat="%d/%b/%Y %H:%M"):
     return time.strftime(strformat, time.localtime(int(seconds)))
 
 
-def zapi_exception(log_message: str):
+def zapi_exception(log_message: str, level=logging.ERROR):
     """Создание декоратора с заданным сообщение в лог"""
 
     def decorator(func):
@@ -28,7 +28,20 @@ def zapi_exception(log_message: str):
 
         return wrapper
 
-    return decorator
+    def critical_decorator(func):
+
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except ZabbixAPIException as ze:
+                log.critical("%s: %s", log_message, ze.data)
+
+        return wrapper
+
+    if level == logging.ERROR:
+        return decorator
+    elif level == logging.CRITICAL:
+        return critical_decorator
 
 
 class Zabbix:
