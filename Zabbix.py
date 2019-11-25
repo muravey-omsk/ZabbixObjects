@@ -597,7 +597,7 @@ class ZabbixHost(Zabbix):
         """
         if not self._z_host.get('parentTemplates'):
             self._get(output='parentTemplates', selectParentTemplates='extend')
-        return (ZabbixTemplate(self._zapi, t) for t in self._z_host.get('parentTemplates'))
+        return (ZabbixTemplate(self._zapi, t) for t in self._z_host.get('parentTemplates', []))
 
     @zapi_exception("Ошибка привязки шаблона")
     def link_template(self, template: ZabbixTemplate):
