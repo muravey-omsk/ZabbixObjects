@@ -602,7 +602,7 @@ class ZabbixHost(Zabbix):
     @zapi_exception("Ошибка привязки шаблона")
     def link_template(self, template: ZabbixTemplate):
         """Привязывает новый шаблон и удаляет все остальные с этого узла"""
-        self._update(templates=template.templateid)
+        self._update(templates={'templateid': template.templateid})
         self._get(output='parentTemplates', selectParentTemplates='extend')
 
     def find_parent_templates(self, template_name: str):
