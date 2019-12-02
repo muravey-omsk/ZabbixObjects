@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Union, Generator
+from typing import Union
 
 from .Zabbix import *
 
