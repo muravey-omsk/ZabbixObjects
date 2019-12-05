@@ -555,12 +555,16 @@ class ZabbixHost(Zabbix):
 
     def _get_VIP(self) -> str:
         """Получение статуса коммутатора"""
-        is_svip = self.get_macro(r'{$IS_SVIP}').value
-        is_vip = self.get_macro(r'{$IS_VIP}').value
-        if is_svip and int(is_svip) == 1:
-            return 'SVIP'
-        elif is_vip and int(is_vip) == 1:
-            return 'VIP'
+        is_svip_macro = self.get_macro(r'{$IS_SVIP}')
+        if is_svip_macro is not None:
+            is_svip = is_svip_macro.value
+            if is_svip and int(is_svip) == 1:
+                return 'SVIP'
+        is_vip_macro = self.get_macro(r'{$IS_VIP}')
+        if is_vip_macro is not None:
+            is_vip = is_vip_macro.value
+            if is_vip and int(is_vip) == 1:
+                return 'VIP'
         return ''
 
     @property
