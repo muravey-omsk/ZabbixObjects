@@ -57,7 +57,7 @@ class Zabbix:
 
     @property
     def dict(self) -> dict:
-        return self._z_dict
+        return {'zabbix': self._z_dict}
 
 
 class ZabbixConfiguration(Zabbix):
