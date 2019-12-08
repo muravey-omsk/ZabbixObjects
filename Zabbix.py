@@ -707,6 +707,7 @@ class ZabbixTrigger(Zabbix):
         super().__init__(host._zapi)
         self._z_dict = trigger
         self._host = host
+        self._get()
 
     def __str__(self) -> str:
         return self.description
@@ -721,6 +722,7 @@ class ZabbixTrigger(Zabbix):
         trigger_get.update(kwargs)
         z_trigger = self._zapi.trigger.get(**trigger_get)[0]
         self._z_dict.update(z_trigger)
+        self._z_dict.update(host=self.host.dict)
 
     @classmethod
     @zapi_exception("Ошибка получения Zabbix триггера")
@@ -834,6 +836,7 @@ class ZabbixEvent(Zabbix):
         super().__init__(trigger._zapi)
         self._trigger = trigger
         self._z_dict = event
+        self._get()
 
     def __str__(self) -> str:
         return f"{self.name} ({strftime(self.clock)})"
@@ -848,6 +851,7 @@ class ZabbixEvent(Zabbix):
         event_get.update(options)
         z_event = self._zapi.event.get(**event_get)[0]
         self._z_dict.update(z_event)
+        self._z_dict.update(trigger=self.trigger.dict)
 
     @classmethod
     @zapi_exception("Ошибка получения Zabbix события")
