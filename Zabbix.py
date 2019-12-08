@@ -521,7 +521,7 @@ class ZabbixHost(Zabbix):
             self._update(host=value)
             self._z_dict['host'] = value
         except ZabbixAPIException as e:
-            log.error("%s: Ошибка переименовывания: %s", self, e.data)
+            log.error("Ошибка переименовывания: %s", e.data, extra=self.dict)
 
     @property
     def name(self) -> str:
@@ -535,7 +535,7 @@ class ZabbixHost(Zabbix):
             self._update(name=value)
             self._z_dict['name'] = value
         except ZabbixAPIException as e:
-            log.error("%s: Ошибка смены имени: %s", self, e.data)
+            log.error("Ошибка смены имени: %s", e.data, extra=self.dict)
 
     @property
     def is_vip(self) -> str:
@@ -641,7 +641,7 @@ class ZabbixHost(Zabbix):
     @inventory.setter
     @zapi_exception("Ошибка обновления инвентарных данных")
     def inventory(self, value: dict):
-        log.info("%12s: Меняю инвентарные данные %s", self, ','.join(value.keys()))
+        log.info("Меняю инвентарные данные", extra=self.dict)
         self._z_dict['inventory'].update(value)
         self._update(inventory=self._z_dict.get('inventory'))
 
@@ -656,10 +656,10 @@ class ZabbixHost(Zabbix):
         zabbix_macro = self.get_macro(macro)
         if zabbix_macro:
             if str(zabbix_macro.value) != str(value):
-                log.info("%12s: Меняю макрос %s с '%s' на '%s'", self, macro, zabbix_macro.value, value)
+                log.info("Меняю макрос", extra=self.dict)
                 zabbix_macro.value = value
         else:
-            log.info("%12s: Устанавливаю макрос '%s' в '%s'", self, macro, value)
+            log.info("Устанавливаю макрос", extra=self.dict)
             zabbix_macro = ZabbixMacro.create(self._zapi, self.hostid, macro, value)
         return zabbix_macro
 
@@ -687,7 +687,7 @@ class ZabbixHost(Zabbix):
     @proxy_hostid.setter
     @zapi_exception("Ошибка переноса на прокси")
     def proxy_hostid(self, value: int):
-        log.info("%12s: Переношу на прокси: %s", self, str(value))
+        log.info("Переношу на прокси", extra=self.dict)
         self._update(proxy_hostid=value)
         self._z_dict['proxy_hostid'] = value
 
@@ -918,7 +918,7 @@ class ZabbixEvent(Zabbix):
         :param str message: Текст сообщения
         :param int action: Сумма действий (например 7=1+2+4)
         """
-        log.debug("%s: Подтверждение события в Zabbix")
+        log.info("Подтверждение события в Zabbix", extra=self.dict)
         event_ack = dict(
             eventids=self._z_dict['eventid'],
             action=action,  # 2 - подтвердить событие, 4 - добавить сообщение
