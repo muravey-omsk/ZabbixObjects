@@ -56,7 +56,7 @@ class Zabbix:
         self.__z_dict = None
 
     @property
-    def dict(self):
+    def dict(self) -> dict:
         return self.__z_dict
 
 
