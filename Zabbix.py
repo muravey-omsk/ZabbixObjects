@@ -707,7 +707,6 @@ class ZabbixTrigger(Zabbix):
         super().__init__(host._zapi)
         self._z_dict = trigger
         self._host = host
-        self._get()
 
     def __str__(self) -> str:
         return self.description
@@ -836,7 +835,6 @@ class ZabbixEvent(Zabbix):
         super().__init__(trigger._zapi)
         self._trigger = trigger
         self._z_dict = event
-        self._get()
 
     def __str__(self) -> str:
         return f"{self.name} ({strftime(self.clock)})"
