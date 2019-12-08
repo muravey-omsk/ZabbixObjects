@@ -56,10 +56,6 @@ class Zabbix:
         self.__z_dict = None
 
     @property
-    def zapi(self):
-        return self._zapi
-
-    @property
     def dict(self):
         return self.__z_dict
 
@@ -708,7 +704,7 @@ class ZabbixTrigger(Zabbix):
         """
         if not trigger.get('triggerid'):
             raise KeyError
-        super().__init__(host.zapi)
+        super().__init__(host._zapi)
         self.__z_dict = trigger
         self._host = host
 
@@ -754,7 +750,7 @@ class ZabbixTrigger(Zabbix):
     def host(self) -> ZabbixHost:
         if self._host is None:
             self._get()
-            self._host = ZabbixHost(self.zapi, self.__z_dict['host'])
+            self._host = ZabbixHost(self._zapi, self.__z_dict['host'])
         return self._host
 
     @property
@@ -835,7 +831,7 @@ class ZabbixEvent(Zabbix):
         """
         if not event.get('eventid'):
             raise KeyError
-        super().__init__(trigger.zapi)
+        super().__init__(trigger._zapi)
         self._trigger = trigger
         self.__z_dict = event
 
