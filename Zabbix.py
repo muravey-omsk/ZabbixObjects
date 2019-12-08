@@ -751,8 +751,9 @@ class ZabbixTrigger(Zabbix):
 
     @property
     def host(self) -> ZabbixHost:
-        if self.__dict__.get('host') is None:
+        if self._host is None:
             self._get()
+            self._host = ZabbixHost(self.zapi, self.__dict__['host'])
         return self._host
 
     @property
