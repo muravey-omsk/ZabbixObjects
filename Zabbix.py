@@ -705,8 +705,9 @@ class ZabbixTrigger(Zabbix):
         if not trigger.get('triggerid'):
             raise KeyError
         super().__init__(host._zapi)
-        self._z_dict = trigger
         self._host = host
+        self._z_dict = trigger
+        self._z_dict.update(host=self.host.dict.get('zabbix'))
 
     def __str__(self) -> str:
         return self.description
@@ -721,7 +722,6 @@ class ZabbixTrigger(Zabbix):
         trigger_get.update(kwargs)
         z_trigger = self._zapi.trigger.get(**trigger_get)[0]
         self._z_dict.update(z_trigger)
-        self._z_dict.update(host=self.host.dict.get('zabbix'))
 
     @classmethod
     @zapi_exception("Ошибка получения Zabbix триггера")
