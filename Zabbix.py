@@ -178,16 +178,6 @@ class ZabbixProxy(Zabbix):
 class ZabbixGroup(Zabbix):
     """Класс для работы с группами узлов Zabbix"""
 
-    @property
-    def groupid(self):
-        return int(self.__z_dict['groupid'])
-
-    @property
-    def name(self):
-        if not self.__z_dict.get('name'):
-            self._get()
-        return self.__z_dict.get('name')
-
     def __init__(self, zapi: ZabbixAPI, group: dict):
         """
 
@@ -212,6 +202,16 @@ class ZabbixGroup(Zabbix):
         hostgroup_get.update(options)
         z_group = self._zapi.hostgroup.get(**hostgroup_get)[0]
         self.__z_dict.update(z_group)
+
+    @property
+    def groupid(self):
+        return int(self.__z_dict['groupid'])
+
+    @property
+    def name(self):
+        if not self.__z_dict.get('name'):
+            self._get()
+        return self.__z_dict.get('name')
 
     @classmethod
     @zapi_exception("Ошибка получения Zabbix группы")
@@ -467,6 +467,25 @@ class ZabbixInterface(Zabbix):
 class ZabbixHost(Zabbix):
     """Класс для работы с узлами Zabbix"""
 
+    def __init__(self, zapi: ZabbixAPI, host: dict):
+        """
+
+        :param host: Узел Zabbix.
+            Обязательным полем host является только 'hostid': id узла Zabbix
+        :rtype: ZabbixHost
+        """
+        if not host.get('hostid'):
+            raise KeyError
+        super().__init__(zapi)
+        self.__z_dict = host
+        self._macros = list()  # список ZabbixMacro
+        self._interfaces = list()  # список ZabbixInterface
+        self._vip = None
+        self._groups = None
+
+    def __str__(self) -> str:
+        return self.host
+
     @zapi_exception("Ошибка получения данных Zabbix узла")
     def _get(self, **options):
         """Получение всех данных узла из ZabbixAPI"""
@@ -523,25 +542,6 @@ class ZabbixHost(Zabbix):
         if not self._vip:
             self._vip = self._get_VIP()
         return self._vip
-
-    def __init__(self, zapi: ZabbixAPI, host: dict):
-        """
-
-        :param host: Узел Zabbix.
-            Обязательным полем host является только 'hostid': id узла Zabbix
-        :rtype: ZabbixHost
-        """
-        if not host.get('hostid'):
-            raise KeyError
-        super().__init__(zapi)
-        self.__z_dict = host
-        self._macros = list()  # список ZabbixMacro
-        self._interfaces = list()  # список ZabbixInterface
-        self._vip = None
-        self._groups = None
-
-    def __str__(self) -> str:
-        return self.host
 
     @classmethod
     @zapi_exception("Ошибка получения Zabbix узла")
