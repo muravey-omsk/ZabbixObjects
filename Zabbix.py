@@ -906,9 +906,7 @@ class ZabbixEvent(Zabbix):
 
     def get_tag(self, name: str) -> str:
         tag = next(filter(lambda t: t.get('tag') == name, self.tags), None)
-        if tag is None:
-            return
-        return tag.get('value')
+        return tag.get('value', '')
 
     def ack(self, message, action=6) -> bool:
         """Подтверждаем в Zabbix
