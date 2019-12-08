@@ -722,7 +722,7 @@ class ZabbixTrigger(Zabbix):
         trigger_get.update(kwargs)
         z_trigger = self._zapi.trigger.get(**trigger_get)[0]
         self._z_dict.update(z_trigger)
-        self._z_dict.update(host=self.host.dict)
+        self._z_dict.update(host=self.host.dict.get('zabbix'))
 
     @classmethod
     @zapi_exception("Ошибка получения Zabbix триггера")
@@ -851,7 +851,7 @@ class ZabbixEvent(Zabbix):
         event_get.update(options)
         z_event = self._zapi.event.get(**event_get)[0]
         self._z_dict.update(z_event)
-        self._z_dict.update(trigger=self.trigger.dict)
+        self._z_dict.update(trigger=self.trigger.dict.get('zabbix'))
 
     @classmethod
     @zapi_exception("Ошибка получения Zabbix события")
