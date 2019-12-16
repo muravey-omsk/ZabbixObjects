@@ -617,7 +617,7 @@ class ZabbixHost(Zabbix):
         if not self._interfaces or len(self._interfaces) != len(self._z_dict.get('interfaces')):
             if not self._z_dict.get('interfaces'):
                 self._get(output='interfaces', selectInterfaces='extend')
-            self._interfaces = [ZabbixInterface(self._zapi, i) for i in self._z_dict.get('interfaces')]
+            self._interfaces = [ZabbixInterface(self._zapi, i) for i in self._z_dict.get('interfaces', []) if i]
         return self._interfaces
 
     def get_main_interface(self):
