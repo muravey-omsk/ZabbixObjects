@@ -23,8 +23,6 @@ def zapi_exception(log_message: str, level=logging.ERROR):
                 return func(*args, **kwargs)
             except ZabbixAPIException as ze:
                 log.error("%s: %s", log_message, ze.data)
-            except IndexError as e:
-                log.error("%s: %s", log_message, e)
 
         return wrapper
 
