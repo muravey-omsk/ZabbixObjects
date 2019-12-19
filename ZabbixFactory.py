@@ -261,7 +261,7 @@ class ZabbixProblemFactory(ZabbixEventFactory):
         return ZabbixProblem(trigger, event)
 
     def get_by_id(self, eventid: int):
-        return ZabbixProblem.get_by_id(eventid)
+        return ZabbixProblem.get_by_id(self._zapi, eventid)
 
     @zapi_exception("Ошибка получения Zabbix проблем")
     def get_by_groupids(self, groupids: List[int], limit: int = 500, **options):
