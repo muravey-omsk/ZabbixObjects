@@ -260,6 +260,9 @@ class ZabbixProblemFactory(ZabbixEventFactory):
         trigger = self._get_trigger_by_eventid(event['eventid'])
         return ZabbixProblem(trigger, event)
 
+    def get_by_id(self, eventid: int):
+        return ZabbixProblem.get_by_id(eventid)
+
     @zapi_exception("Ошибка получения Zabbix проблем")
     def get_by_groupids(self, groupids: List[int], limit: int = 500, **options):
         """Генератор событий из групп groupids по ZabbixAPI"""
