@@ -939,12 +939,13 @@ class ZabbixProblem(ZabbixEvent):
 
     @classmethod
     @zapi_exception("Ошибка получения Zabbix проблемы")
-    def get_by_id(cls, zapi: ZabbixAPI, eventid: int):
+    def get_by_id(cls, zapi: ZabbixAPI, eventid: int, **options):
         """Создание объекта ZabbixEvent из ZabbixAPI"""
         event_get = dict(
             output='extend',
             eventids=[eventid],
         )
+        event_get.update(options)
         z_event = zapi.problem.get(**event_get)[0]
         trigger = ZabbixTrigger.get_by_id(zapi, z_event['objectid'])
         if trigger:
