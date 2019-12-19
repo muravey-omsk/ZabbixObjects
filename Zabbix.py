@@ -901,6 +901,13 @@ class ZabbixEvent(Zabbix):
             self._get(selectTags='extend')
         return self._z_dict.get('tags')
 
+    @property
+    def r_event(self):
+        if not self._z_dict.get('r_eventid'):
+            self._get()
+        event = ZabbixEvent(self.trigger, {'eventid': self._z_dict.get('r_eventid')})
+        return event
+
     def get_tag(self, name: str) -> str:
         tag = next(filter(lambda t: t.get('tag') == name, self.tags), None)
         return tag.get('value', '')
@@ -929,13 +936,6 @@ class ZabbixEvent(Zabbix):
 
 class ZabbixProblem(ZabbixEvent):
     """Класс для работы с пролемами Zabbix"""
-
-    @property
-    def r_event(self):
-        if not self._z_dict.get('r_eventid'):
-            self._get()
-        event = ZabbixEvent(self.trigger, {'eventid': self._z_dict.get('r_eventid')})
-        return event
 
     @classmethod
     @zapi_exception("Ошибка получения Zabbix проблемы")
