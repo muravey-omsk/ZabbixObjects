@@ -260,8 +260,30 @@ class ZabbixProblemFactory(ZabbixEventFactory):
         trigger = self._get_trigger_by_eventid(event['eventid'])
         return ZabbixProblem(trigger, event)
 
+    @zapi_exception("Ошибка получения Zabbix проблем")
+    def get(self, **options):
+        problem_get = dict(
+            output='extend',
+        )
+        problem_get.update(options)
+        z_events: list = self._zapi.problem.get(**problem_get)
+        return z_events
+
     def get_by_id(self, eventid: int, recent=False):
         return ZabbixProblem.get_by_id(self._zapi, eventid, recent=recent)
+
+    def get_by_tag(self, tag: str, limit: int = 500, **options):
+        problem_get = dict(
+            time_from=int(time.time()) - (3 * 86400),
+            tags=[{'tag': tag}],
+            acknowledged=False,
+            suppressed=False,
+        )
+        problem_get.update(options)
+        z_events: list = self.get(**problem_get)
+        if z_events is None or len(z_events) >= limit:
+            return
+        return (self.make(event) for event in z_events)
 
     @zapi_exception("Ошибка получения Zabbix проблем")
     def get_by_groupids(self, groupids: List[int], limit: int = 500, **options):
