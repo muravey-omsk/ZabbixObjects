@@ -636,6 +636,7 @@ class ZabbixHost(Zabbix):
             zabbix_macro = ZabbixMacro.create(self._zapi, self.hostid, macro, value)
         return zabbix_macro
 
+    @zapi_exception("Ошибка удаления Zabbix узла")
     def delete(self):
         """УДАЛЕНИЕ Zabbix узла"""
         self._zapi.host.delete(self.hostid)
@@ -800,7 +801,7 @@ class ZabbixEvent(Zabbix):
         return int(self._z_dict.get('acknowledged'))
 
     @property
-    def messages(self):
+    def messages(self) -> list:
         if not self._z_dict.get('acknowledges'):
             self.__get(select_acknowledges='extend')
         return self._z_dict.get('acknowledges')
@@ -834,6 +835,7 @@ class ZabbixEvent(Zabbix):
         tag = next(filter(lambda t: t.get('tag') == name, self.tags), None)
         return tag.get('value', '')
 
+    @zapi_exception("Ошибка подтверждения Zabbix события")
     def ack(self, message, action=6) -> bool:
         """Подтверждаем в Zabbix
 
