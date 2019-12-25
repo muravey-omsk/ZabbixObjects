@@ -801,10 +801,11 @@ class ZabbixEvent(Zabbix):
         return int(self._z_dict.get('acknowledged'))
 
     @property
-    def messages(self) -> list:
+    def messages(self) -> List[str]:
         if not self._z_dict.get('acknowledges'):
             self.__get(select_acknowledges='extend')
-        return self._z_dict.get('acknowledges')
+        acks = self._z_dict.get('acknowledges')
+        return [m.get('message') for m in acks]
 
     @property
     def name(self):
