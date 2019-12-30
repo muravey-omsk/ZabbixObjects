@@ -35,7 +35,7 @@ class ZabbixGroupFactory(ZabbixFactory):
 
     @zapi_exception("Ошибка получения Zabbix группы", logging.CRITICAL)
     def __get(self, **options) -> list:
-        return self._zapi.proxy.get(**options)
+        return self._zapi.group.get(**options)
 
     def get_by_id(self, groupid: int):
         """Создание объекта ZabbixGroup из ZabbixAPI"""
