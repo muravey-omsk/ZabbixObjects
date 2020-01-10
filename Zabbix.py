@@ -565,7 +565,8 @@ class ZabbixHost(Zabbix):
         if not self._macros:
             if not self._z_dict.get('macros'):
                 self.__get(output='macros', selectMacros='extend')
-            self._macros = [ZabbixMacro(self._zapi, m) for m in self._z_dict.get('macros')]
+            if self._z_dict.get('macros'):
+                self._macros = [ZabbixMacro(self._zapi, m) for m in self._z_dict.get('macros')]
         return self._macros
 
     def get_macro(self, macro: str):
