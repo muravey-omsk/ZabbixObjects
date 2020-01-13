@@ -22,7 +22,7 @@ def zapi_exception(log_message: str, level=logging.ERROR):
             try:
                 return func(*args, **kwargs)
             except ZabbixAPIException as ze:
-                log.error("%s: %s", log_message, ze.message)
+                log.error("%s: %s: %s", log_message, ze.message, ze.data)
 
         return wrapper
 
@@ -32,7 +32,7 @@ def zapi_exception(log_message: str, level=logging.ERROR):
             try:
                 return func(*args, **kwargs)
             except ZabbixAPIException as ze:
-                log.critical("%s: %s", log_message, ze.message)
+                log.critical("%s: %s: %s", log_message, ze.message, ze.data)
 
         return wrapper
 
