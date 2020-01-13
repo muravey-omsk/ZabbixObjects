@@ -582,8 +582,9 @@ class ZabbixHost(Zabbix):
         return (ZabbixTemplate(self._zapi, t) for t in self._z_dict.get('parentTemplates', []))
 
     def link_template(self, template: ZabbixTemplate):
-        """Привязывает новый шаблон и удаляет все остальные с этого узла"""
-        self.__update(templates={'templateid': template.templateid})
+        """Привязывает новый шаблон и удаляет все остальные (с очисткой) с этого узла"""
+        self.__update(templates={'templateid': template.templateid},
+                      templates_clear=[{'templateid': template.templateid} for template in self.parent_templates])
         self.__get(output='parentTemplates', selectParentTemplates='extend')
 
     def find_parent_templates(self, template_name: str):
