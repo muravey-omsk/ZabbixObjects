@@ -135,8 +135,6 @@ class ZabbixHostFactory(ZabbixFactory):
     def get_by_filter(self, _filter: dict, **options):
         """Получение списка объектов ZabbixHost из ZabbixAPI по фильтру"""
         z_hosts = self.__get(filter=_filter, **options)
-        if z_hosts is None:
-            raise StopIteration
         return (self.__make(z_host) for z_host in z_hosts)
 
     def get_by_name(self, _name: str):
