@@ -227,25 +227,6 @@ class ZabbixEventFactory(ZabbixFactory):
         z_event = self.__get(eventids=[eventid])[0]
         return self.__make(z_event)
 
-    def get_by_groupids(self, groupids: list, limit: int = 500, **options):
-        """Генератор событий из групп groupids по ZabbixAPI"""
-        if groupids is None:
-            groupids = [10]  # Группа по-умолчанию - A4
-        time_from = int(time.time()) - (3600 * 1)  # За последний час
-        z_events = self.__get(
-            groupids=groupids,
-            acknowledged='false',
-            suppressed='false',
-            time_from=time_from,
-            value=1,
-            selectHosts=['hostid', 'host', 'name'],
-            selectRelatedObject=['triggerid', 'description', 'value'],
-            filter={'r_eventid': 0},  # только события без восстановления
-        )
-        if len(z_events) >= limit:
-            return
-        return (self.__make(event) for event in z_events)
-
     def get_by_trigger(self, trigger: ZabbixTrigger, limit=100, **options):
         event_get = dict(
             objectids=trigger.triggerid,
