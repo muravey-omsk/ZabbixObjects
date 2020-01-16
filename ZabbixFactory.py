@@ -246,7 +246,7 @@ class ZabbixEventFactory(ZabbixFactory):
             return
         return (self.__make(event) for event in z_events)
 
-    def get_by_trigger(self, trigger: ZabbixTrigger, since=None, limit=100, acknowledged=None, value=None, **options):
+    def get_by_trigger(self, trigger: ZabbixTrigger, limit=100, **options):
         event_get = dict(
             objectids=trigger.triggerid,
             sortfield=['clock', 'eventid'],
@@ -254,18 +254,6 @@ class ZabbixEventFactory(ZabbixFactory):
             limit=limit,
             select_acknowledges=['acknowledgeid', 'clock', 'message'],
         )
-        if since is not None:
-            event_get.update({
-                'time_from': since,
-            })
-        if acknowledged is not None:
-            event_get.update({
-                'acknowledged': acknowledged,
-            })
-        if value is not None:
-            event_get.update({
-                'value': value
-            })
         event_get.update(options)
         z_events = self.__get(**event_get)
         return (self.__make(event) for event in z_events)
