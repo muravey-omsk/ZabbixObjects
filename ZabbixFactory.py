@@ -227,7 +227,7 @@ class ZabbixEventFactory(ZabbixFactory):
         z_event = self.__get(eventids=[eventid])[0]
         return self.__make(z_event)
 
-    def get_by_trigger(self, trigger: ZabbixTrigger, limit=100, **options):
+    def get_by_trigger(self, trigger: ZabbixTrigger, limit=10, **options):
         event_get = dict(
             objectids=trigger.triggerid,
             sortfield=['clock', 'eventid'],
